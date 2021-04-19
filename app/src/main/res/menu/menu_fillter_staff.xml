@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/first_fragment"
+        android:title="@string/staff"
+        android:actionLayout="@layout/item_check"
+        android:contentDescription="@string/manage_staff"
+        android:icon="@drawable/ic_staff"/>
+
+    <item
+        android:id="@+id/second_fragment"
+        android:title="@string/scan"
+        android:contentDescription="@string/scan_a_code"
+        android:icon="@drawable/ic_qr"/>
+
+
+    <item
+        android:id="@+id/fourth_fragment"
+        android:title="@string/timecard"
+        android:contentDescription="@string/timecard"
+        android:icon="@drawable/ic_check"/>
+</menu>
