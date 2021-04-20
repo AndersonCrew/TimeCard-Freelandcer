@@ -72,7 +72,7 @@ class ScanQRFragment : Fragment() {
                         val timeCard = TimeCard(user, currentTime)
                         myRef.setValue(timeCard).addOnCompleteListener {
                             if(it.isSuccessful) {
-                                Toast.makeText(requireContext(), "Chấm công thành công!", Toast.LENGTH_LONG).show()
+                                Toast.makeText(requireContext(), "Chấm công thành công : ${user.name}", Toast.LENGTH_LONG).show()
                             } else {
                                 Toast.makeText(requireContext(), it.exception?.message?: "Chấm công thất bại", Toast.LENGTH_LONG).show()
                             }
