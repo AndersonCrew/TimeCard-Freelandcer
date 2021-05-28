@@ -64,4 +64,6 @@
     <string name="time">Thời gian</string>
     <string name="search">Tìm kiếm...</string>
     <string name="nh_n_vi_n">Nhân viên</string>
+    <string name="edit_profile">Chỉnh sửa trang cá nhân</string>
+    <string name="update">Update</string>
 </resources>
