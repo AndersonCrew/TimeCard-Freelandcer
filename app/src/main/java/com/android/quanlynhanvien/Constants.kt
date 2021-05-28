@@ -10,4 +10,6 @@ object Constants {
     const val TIME_DATE = "TIME_DATE"
     const val TIME_FORMAT = "dd-MM-yyyy"
     const val HOUR_TIME_FORMAT = "hh:mm dd-MM-yyyy"
+    const val SHARED_PREF_NAME = "SHARED_PREF_NAME"
+    const val ACCESS_TOKEN = "ACCESS_TOKEN"
 }

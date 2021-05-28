@@ -2,57 +2,80 @@ package com.android.quanlynhanvien.ui.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
-import com.android.quanlynhanvien.BaseActivity
-import com.android.quanlynhanvien.Constants
-import com.android.quanlynhanvien.MainActivity
-import com.android.quanlynhanvien.R
+import android.widget.Toast
+import com.android.quanlynhanvien.*
+import com.android.quanlynhanvien.databinding.ActivityLoginBinding
+import com.android.quanlynhanvien.model.User
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class LoginActivity : BaseActivity() {
     private var mAuth: FirebaseAuth? = null
-    private var btnLogin: TextView?= null
-    private var etEmail: EditText?= null
-    private var etPassword: EditText?= null
+    private var binding: ActivityLoginBinding?= null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance()
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+        initEvents()
+    }
 
-        btnLogin = findViewById(R.id.btnLogin)
-        etPassword = findViewById(R.id.etPassword)
-        etEmail = findViewById(R.id.etEmail)
-
-        btnLogin?.setOnClickListener {
-            if(etEmail?.text.isNullOrEmpty() || etPassword?.text.isNullOrEmpty()) {
-                Toast.makeText(this, "Email hoặc password không được để trống!", Toast.LENGTH_LONG).show()
+    private fun initEvents() {
+        binding?.btnLogin?.setOnClickListener {
+            if(binding?.etEmail?.text.isNullOrEmpty() || binding?.etPassword?.text.isNullOrEmpty()) {
+                Toast.makeText(this, "Email or Password is empty!", Toast.LENGTH_LONG).show()
             } else {
-                showProgrss()
-                mAuth?.signInWithEmailAndPassword(etEmail?.text.toString(), etPassword?.text.toString())?.addOnCompleteListener {
-                    hideProgrss()
+                showProgress()
+                mAuth?.signInWithEmailAndPassword(binding?.etEmail?.text.toString(), binding?.etPassword?.text.toString())?.addOnCompleteListener {
                     if(it.isSuccessful) {
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
-                    } else { Toast.makeText(this, "Email hoặc password không chính xác!", Toast.LENGTH_LONG).show()
+                        if(binding?.etEmail?.text.toString() != Constants.EMAIL_ADMIN_DEFAULT) {
+                            getDataStaff(it.result?.user?.uid?:"")
+                        } else {
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+                        }
+                    } else {
+                        hideProgress()
+                        Toast.makeText(this, "Email or Password is not match!", Toast.LENGTH_LONG).show()
                     }
                 }?.addOnCanceledListener {
-                    hideProgrss()
-                    Toast.makeText(this, "Email hoặc password không chính xác!", Toast.LENGTH_LONG).show()
+                    hideProgress()
+                    Toast.makeText(this, "Email or Password is not match!", Toast.LENGTH_LONG).show()
                 }
             }
         }
+
+        binding?.tvRegister?.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
     }
 
-    override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = mAuth?.currentUser
-        if(currentUser != null) {
-            startActivity(Intent(this, MainActivity::class.java))
-        }
+    private fun getDataStaff(uuid: String) {
+        val database = FirebaseDatabase.getInstance()
+        database.getReference(Constants.CHILD_NODE_USER)
+            .child(uuid).addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    hideProgress()
+                    Toast.makeText(this@LoginActivity, error.message, Toast.LENGTH_LONG).show()
+                }
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val user = snapshot.getValue(User::class.java)
+                    user?.let {
+                        hideProgress()
+                        val share = SharePreferencesUtils(this@LoginActivity)
+                        share.saveUser(it)
+                        startActivity(Intent(this@LoginActivity, MainStaffActivity::class.java))
+                        finish()
+                    }
+                }
+
+            })
     }
 }

@@ -1,23 +1,18 @@
 package com.android.quanlynhanvien.ui.detail
 
-import android.R.attr.password
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import com.android.quanlynhanvien.BaseActivity
 import com.android.quanlynhanvien.Constants
 import com.android.quanlynhanvien.R
 import com.android.quanlynhanvien.model.User
-import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
 import java.util.*
@@ -84,17 +79,17 @@ class DetailStaffActivity : BaseActivity() {
 
     private fun deleteUser() {
         hideKeyboard(this)
-        showProgrss()
+        showProgress()
         //Delete in DB
         FirebaseDatabase.getInstance().getReference(Constants.CHILD_NODE_USER)
             .child(user.maNV ?: "-").removeValue()
             .addOnCompleteListener { remove ->
-                hideProgrss()
+                hideProgress()
                 if (remove.isSuccessful) {
                     val database = FirebaseDatabase.getInstance()
                     val myRef = database.getReference(Constants.TIMECARD_NODE).child(user?.maNV?: "-")
                     myRef.removeValue().addOnCompleteListener {
-                        hideProgrss()
+                        hideProgress()
                         if(it.isSuccessful) {
                             Toast.makeText(
                                 this,
@@ -118,7 +113,7 @@ class DetailStaffActivity : BaseActivity() {
     }
 
     private fun editUser() {
-        showProgrss()
+        showProgress()
         hideKeyboard(this)
         val newName = etName?.text.toString()
         val newEmail = etEmail?.text.toString()
@@ -126,12 +121,12 @@ class DetailStaffActivity : BaseActivity() {
 
         if(newName != user.name || newEmail != user.email || newDate != user.birthDay.toString()) {
             //Delete in DB
-            val newUser = User(newName, newDate, newEmail, user.maNV)
+            val newUser = User()
             newUser.urlQRCode = user.urlQRCode
             FirebaseDatabase.getInstance().getReference(Constants.CHILD_NODE_USER)
                 .child(user.maNV ?: "-").setValue(newUser)
                 .addOnCompleteListener { update ->
-                    hideProgrss()
+                    hideProgress()
                     if (update.isSuccessful) {
                         Toast.makeText(
                             this,
@@ -148,7 +143,7 @@ class DetailStaffActivity : BaseActivity() {
                     }
                 }
         } else {
-            hideProgrss()
+            hideProgress()
             Toast.makeText(
                 this,
                 "Cập nhật thành công!",

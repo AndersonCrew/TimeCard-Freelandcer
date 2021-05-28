@@ -2,14 +2,11 @@ package com.android.quanlynhanvien
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.app.DatePickerDialog.OnDateSetListener
-import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import androidx.appcompat.app.AppCompatActivity
 import com.android.quanlynhanvien.model.TimeCard
 import com.android.quanlynhanvien.model.User
 import com.google.firebase.database.DataSnapshot
@@ -163,12 +160,12 @@ class InsertTimeCardActivity : BaseActivity() {
         }
 
 
-        showProgrss()
+        showProgress()
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference(Constants.TIMECARD_NODE).child(listStaff[positionUserChosen].maNV?: "-").child(timeChange.toString())
         val timeCard = TimeCard(listStaff[positionUserChosen], timeChange)
         myRef.setValue(timeCard).addOnCompleteListener {
-            hideProgrss()
+            hideProgress()
             if(it.isSuccessful) {
                 Toast.makeText(this, "Chấm công thành công!", Toast.LENGTH_LONG).show()
                 finish()
@@ -176,7 +173,7 @@ class InsertTimeCardActivity : BaseActivity() {
                 Toast.makeText(this, it.exception?.message?: "Chấm công thất bại, vui lòng thử lại!", Toast.LENGTH_LONG).show()
             }
         }.addOnFailureListener {
-            hideProgrss()
+            hideProgress()
             Toast.makeText(this, it.message?: "Chấm công thất bại, vui lòng thử lại!", Toast.LENGTH_LONG).show()
         }
     }

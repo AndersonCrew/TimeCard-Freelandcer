@@ -2,14 +2,10 @@ package com.android.quanlynhanvien.ui
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.app.ProgressDialog
 import android.app.TimePickerDialog
-import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import com.android.quanlynhanvien.BaseActivity
 import com.android.quanlynhanvien.Constants
@@ -85,13 +81,13 @@ class DetailTimeCardActivity : BaseActivity() {
 
     @SuppressLint("SimpleDateFormat")
     private fun deleteTimeCard() {
-        showProgrss()
+        showProgress()
         val date = Date()
         date.time = timeCard.timeCheck?: 0
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference(Constants.TIMECARD_NODE).child(timeCard.user?.maNV?: "-").child(timeCard.timeCheck.toString())
         myRef.removeValue().addOnCompleteListener {
-            hideProgrss()
+            hideProgress()
             if(it.isSuccessful) {
                 Toast.makeText(this, "Xóa chấm công thành công!", Toast.LENGTH_LONG).show()
                 finish()
@@ -108,14 +104,14 @@ class DetailTimeCardActivity : BaseActivity() {
         date.time = timeCard.timeCheck?: 0
         val timeStr = SimpleDateFormat(Constants.HOUR_TIME_FORMAT).format(date)
         if(timeStr != tvDate?.text){
-            showProgrss()
+            showProgress()
             val database = FirebaseDatabase.getInstance()
             database.getReference(Constants.TIMECARD_NODE).child(timeCard.user?.maNV?: "-").child(timeCard.timeCheck.toString()).removeValue().addOnCompleteListener {
                 if(it.isSuccessful) {
                     val newTimeCard = TimeCard(timeCard.user, timeChange)
                     val myRef = database.getReference(Constants.TIMECARD_NODE).child(timeCard.user?.maNV?: "-").child(timeChange.toString())
                     myRef.setValue(newTimeCard).addOnCompleteListener {
-                        hideProgrss()
+                        hideProgress()
                         if(it.isSuccessful) {
                             Toast.makeText(this, "Cập nhật chấm công thành công!", Toast.LENGTH_LONG).show()
                             finish()

@@ -24,7 +24,7 @@
     <string name="delete">Delete</string>
     <string name="edit">Sửa</string>
     <string name="detail_staff">Chi tiết nhân viên</string>
-    <string name="scan">Scan</string>
+    <string name="scan">Scan QRCode</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="scan_a_code">Scan QR to check in / check out</string>
@@ -36,8 +36,32 @@
     <string name="choose_time">Chọn thời gian</string>
     <string name="insert_timecard">Thêm TimeCard</string>
     <string name="staff">Nhân viên</string>
+    <string name="you_don_t_have_account_sign_up">You don\'t have account? Sign Up</string>
+    <string name="password">Password</string>
+    <string name="message">Message</string>
+    <string name="yes">Yes</string>
+    <string name="ok">OK</string>
+    <string name="no">No</string>
+    <string name="phone">Phone Number</string>
+    <string name="phone_84">+84..</string>
+    <string name="register">Register An Account</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register_title">Register</string>
+    <string name="reuired_email">Please enter your email!</string>
+    <string name="required_phone">Please enter your phone number!</string>
+    <string name="required_password">Please enter your password!</string>
+    <string name="password_not_match">Your password is not match!</string>
+    <string name="fullname">Full Name</string>
+    <string name="reuired_fullName">Please enter your fullname!</string>
+    <string name="profile">Profile</string>
+    <string name="date">Date</string>
+    <string name="tongiao">Religion</string>
+    <string name="gender">Gender</string>
+    <string name="address">Address</string>
+    <string name="you_don_t_have_any_account_sign_up">You don\'t have any account? Sign Up</string>
     <string name="ma_nv">Mã NV</string>
-    <string name="search">Tìm kiếm</string>
     <string name="timecard">Chấm công</string>
     <string name="time">Thời gian</string>
+    <string name="search">Tìm kiếm...</string>
+    <string name="nh_n_vi_n">Nhân viên</string>
 </resources>

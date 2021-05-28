@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/vHeader"
+        android:background="@drawable/bg_header"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardAvatar"
+        android:layout_marginStart="35dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/vHeader"
+        android:layout_marginTop="80dp"
+        android:layout_width="106dp"
+        android:layout_height="106dp">
+
+        <ImageView
+            android:id="@+id/imgAvatar"
+            android:src="@drawable/avtar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvName"
+        tools:text="Anderson Matt"
+        app:layout_constraintStart_toStartOf="@id/vGuide"
+        app:layout_constraintBottom_toTopOf="@id/vGuide"
+        android:textColor="@color/colorWhite"
+        android:fontFamily="@font/poppins_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:id="@+id/vGuide"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toEndOf="@id/cardAvatar"
+        app:layout_constraintTop_toTopOf="@id/cardAvatar"
+        app:layout_constraintBottom_toBottomOf="@id/vHeader"
+        android:layout_width="1dp"
+        android:layout_height="1dp"/>
+
+    <TextView
+        android:id="@+id/tvPosition"
+        android:text="@string/nh_n_vi_n"
+        app:layout_constraintStart_toStartOf="@id/vGuide"
+        app:layout_constraintTop_toBottomOf="@id/vGuide"
+        android:textColor="@color/colorWhite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tvLogo"
+        android:text="@string/app_name"
+        android:textSize="22sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/cardAvatar"
+        app:layout_constraintStart_toStartOf="@id/cardAvatar"
+        android:textColor="@color/colorWhite"
+        android:fontFamily="@font/poppins_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/imgLogout"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/ic_baseline_logout_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tvLogo"
+        app:layout_constraintTop_toTopOf="@id/tvLogo"
+        android:layout_width="24dp"
+        android:layout_height="24dp"/>
+
+   <androidx.core.widget.NestedScrollView
+       app:layout_constraintTop_toBottomOf="@id/vHeader"
+       app:layout_constraintBottom_toBottomOf="parent"
+       android:fillViewport="true"
+       android:layout_width="match_parent"
+       android:layout_height="0dp">
+
+       <androidx.constraintlayout.widget.ConstraintLayout
+           android:padding="35dp"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+
+           <!--FullName-->
+           <ImageView
+               android:id="@+id/imgFullName"
+               android:layout_marginTop="85dp"
+               android:alpha="0.7"
+               android:src="@drawable/ic_name"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toTopOf="parent"
+               android:layout_width="21dp"
+               android:layout_height="21dp"
+               app:tint="@color/colorText" />
+
+           <TextView
+               android:layout_margin="15dp"
+               android:textSize="11sp"
+               android:text="@string/fullname"
+               app:layout_constraintBottom_toTopOf="@id/imgFullName"
+               app:layout_constraintStart_toEndOf="@id/imgFullName"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+           <TextView
+               android:id="@+id/tvFullName"
+               android:layout_marginStart="15dp"
+               tools:text="Anderson Matt"
+               android:textColor="@color/colorBlack"
+               app:layout_constraintStart_toEndOf="@id/imgFullName"
+               app:layout_constraintTop_toTopOf="@id/imgFullName"
+               app:layout_constraintBottom_toBottomOf="@id/imgFullName"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+           <View
+               android:id="@+id/vFullname"
+               android:background="@color/colorBlack"
+               android:alpha="0.6"
+               android:layout_marginTop="10dp"
+               app:layout_constraintTop_toBottomOf="@id/tvFullName"
+               android:layout_width="match_parent"
+               android:layout_height="0.5dp"/>
+
+           <!--Email-->
+           <ImageView
+               android:id="@+id/imgEmail"
+               android:layout_marginTop="15dp"
+               android:alpha="0.7"
+               android:src="@drawable/ic_baseline_email_24"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@id/tvTitleEmail"
+               android:layout_width="21dp"
+               android:layout_height="21dp"
+               app:tint="@color/colorText" />
+
+           <TextView
+               android:id="@+id/tvTitleEmail"
+               android:textSize="12sp"
+               android:text="@string/email"
+               android:layout_marginTop="20dp"
+               app:layout_constraintTop_toBottomOf="@id/vFullname"
+               app:layout_constraintStart_toStartOf="@id/tvFullName"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+           <TextView
+               android:id="@+id/tvEmail"
+               android:layout_marginStart="15dp"
+               tools:text="Pikakun19@gmail.com"
+               android:textColor="@color/colorBlack"
+               app:layout_constraintStart_toEndOf="@id/imgEmail"
+               app:layout_constraintTop_toTopOf="@id/imgEmail"
+               app:layout_constraintBottom_toBottomOf="@id/imgEmail"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+           <View
+               android:id="@+id/vEmail"
+               android:background="@color/colorBlack"
+               android:alpha="0.6"
+               android:layout_marginTop="10dp"
+               app:layout_constraintTop_toBottomOf="@id/tvEmail"
+               android:layout_width="match_parent"
+               android:layout_height="0.5dp"/>
+
+           <!--Date-->
+           <ImageView
+               android:id="@+id/imgDate"
+               android:layout_marginTop="15dp"
+               android:alpha="0.7"
+               android:src="@drawable/ic_date"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@id/tvTitleDate"
+               android:layout_width="21dp"
+               android:layout_height="21dp"
+               app:tint="@color/colorText" />
+
+           <TextView
+               android:id="@+id/tvTitleDate"
+               android:textSize="11sp"
+               android:text="@string/date"
+               android:layout_marginTop="20dp"
+               app:layout_constraintTop_toBottomOf="@id/vEmail"
+               app:layout_constraintStart_toStartOf="@id/tvTitleEmail"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+           <TextView
+               android:id="@+id/tvDate"
+               android:layout_marginStart="15dp"
+               tools:text="16/08/1996"
+               android:textColor="@color/colorBlack"
+               app:layout_constraintStart_toEndOf="@id/imgDate"
+               app:layout_constraintTop_toTopOf="@id/imgDate"
+               app:layout_constraintBottom_toBottomOf="@id/imgDate"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+           <View
+               android:id="@+id/vDate"
+               android:background="@color/colorBlack"
+               android:alpha="0.6"
+               android:layout_marginTop="10dp"
+               app:layout_constraintTop_toBottomOf="@id/tvDate"
+               android:layout_width="match_parent"
+               android:layout_height="0.5dp"/>
+
+           <!--Dan Toc Gioi Tinh-->
+
+           <TextView
+               android:id="@+id/tvTitleTonGiao"
+               android:textSize="11sp"
+               android:text="@string/tongiao"
+               android:layout_marginTop="20dp"
+               app:layout_constraintTop_toBottomOf="@id/vGender"
+               app:layout_constraintStart_toStartOf="@id/tvTitleAddress"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+
+           <TextView
+               android:id="@+id/tvReligion"
+               tools:text="Kinh"
+               android:layout_marginTop="15dp"
+               android:textColor="@color/colorBlack"
+               app:layout_constraintStart_toStartOf="@id/tvTitleTonGiao"
+               app:layout_constraintTop_toBottomOf="@id/tvTitleTonGiao"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+           <ImageView
+               android:id="@+id/imgReligion"
+               android:layout_marginTop="15dp"
+               android:alpha="0.7"
+               android:src="@drawable/ic_religion"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@id/tvTitleTonGiao"
+               android:layout_width="21dp"
+               android:layout_height="21dp"
+               app:tint="@color/colorText" />
+
+
+           <TextView
+               android:id="@+id/tvTitleGender"
+               android:textSize="11sp"
+               android:text="@string/gender"
+               android:layout_marginTop="20dp"
+               app:layout_constraintTop_toBottomOf="@id/vGender"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintStart_toEndOf="@id/tvTitleTonGiao"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+           <TextView
+               android:id="@+id/tvGender"
+               tools:text="Nam"
+               android:layout_marginTop="15dp"
+               android:textColor="@color/colorBlack"
+               app:layout_constraintStart_toStartOf="@id/tvTitleGender"
+               app:layout_constraintTop_toBottomOf="@id/tvTitleGender"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+           <ImageView
+               android:layout_marginTop="15dp"
+               android:alpha="0.7"
+               android:src="@drawable/ic_baseline_transgender_24"
+               android:layout_marginEnd="15dp"
+               app:layout_constraintEnd_toStartOf="@id/tvTitleGender"
+               app:layout_constraintTop_toBottomOf="@id/tvTitleGender"
+               android:layout_width="21dp"
+               android:layout_height="21dp"
+               app:tint="@color/colorText" />
+
+           <View
+               android:id="@+id/vGender"
+               android:background="@color/colorBlack"
+               android:alpha="0.6"
+               android:layout_marginTop="10dp"
+               app:layout_constraintTop_toBottomOf="@id/tvAddress"
+               android:layout_width="match_parent"
+               android:layout_height="0.5dp"/>
+
+           <!--Address-->
+           <ImageView
+               android:id="@+id/imgAddress"
+               android:layout_marginTop="15dp"
+               android:alpha="0.7"
+               android:src="@drawable/ic_baseline_location_on_24"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toBottomOf="@id/tvTitleAddress"
+               android:layout_width="21dp"
+               android:layout_height="21dp"
+               app:tint="@color/colorText" />
+
+           <TextView
+               android:id="@+id/tvTitleAddress"
+               android:textSize="12sp"
+               android:text="@string/address"
+               android:layout_marginTop="20dp"
+               app:layout_constraintTop_toBottomOf="@id/vDate"
+               app:layout_constraintStart_toStartOf="@id/tvTitleDate"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+           <TextView
+               android:id="@+id/tvAddress"
+               android:layout_marginStart="15dp"
+               tools:text="125/29 đường số 9, Phường 9, Gò Vấp"
+               android:textColor="@color/colorBlack"
+               app:layout_constraintStart_toEndOf="@id/imgAddress"
+               app:layout_constraintTop_toTopOf="@id/imgAddress"
+               app:layout_constraintBottom_toBottomOf="@id/imgAddress"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+           <TextView
+               android:layout_marginTop="70dp"
+               android:text="Edit Profile"
+               android:fontFamily="@font/poppins_bold"
+               android:gravity="center"
+               android:textColor="@color/colorWhite"
+               app:layout_constraintTop_toBottomOf="@id/tvGender"
+               android:background="@drawable/bg_btn"
+               android:layout_width="match_parent"
+               android:layout_height="42dp"/>
+
+       </androidx.constraintlayout.widget.ConstraintLayout>
+   </androidx.core.widget.NestedScrollView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

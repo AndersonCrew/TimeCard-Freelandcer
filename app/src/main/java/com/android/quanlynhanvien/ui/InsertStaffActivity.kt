@@ -3,7 +3,6 @@ package com.android.quanlynhanvien.ui
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.app.ProgressDialog
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -14,7 +13,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
-import androidx.appcompat.app.AppCompatActivity
 import com.android.quanlynhanvien.BaseActivity
 import com.android.quanlynhanvien.Constants
 import com.android.quanlynhanvien.R
@@ -63,7 +61,7 @@ class InsertStaffActivity : BaseActivity() {
         mAuth = FirebaseAuth.getInstance()
 
         btnInsert?.setOnClickListener {
-            showProgrss()
+            showProgress()
             etMaNV?.error = null
             etName?.error = null
             etEmail?.error = null
@@ -71,27 +69,27 @@ class InsertStaffActivity : BaseActivity() {
             when {
                 etMaNV?.text.isNullOrEmpty() -> {
                     etMaNV?.error = "Bắt buộc!"
-                    hideProgrss()
+                    hideProgress()
                 }
 
                 etName?.text.isNullOrEmpty() -> {
                     etName?.error = "Bắt buộc!"
-                    hideProgrss()
+                    hideProgress()
                 }
 
                 etEmail?.text.isNullOrEmpty() -> {
                     etEmail?.error = "Bắt buộc!"
-                    hideProgrss()
+                    hideProgress()
                 }
 
                 !isValidEmail(etEmail?.text.toString()) -> {
                     Toast.makeText(this, "Email không đúng định dạng!", Toast.LENGTH_LONG).show()
-                    hideProgrss()
+                    hideProgress()
                 }
 
                 etDate?.text.isNullOrEmpty() -> {
                     Toast.makeText(this, "Vui lòng chọn ngày sinh!", Toast.LENGTH_LONG).show()
-                    hideProgrss()
+                    hideProgress()
                 }
 
                 else -> {
@@ -143,12 +141,7 @@ class InsertStaffActivity : BaseActivity() {
 
     private var qrImage : Bitmap? = null
     private fun generateQRCode() {
-        val user = User(
-            etName?.text.toString(),
-            etDate?.text.toString(),
-            etEmail?.text.toString(),
-            etMaNV?.text.toString()
-        )
+        val user = User()
 
         val qrCode = QRGEncoder(Gson().toJson(user), null, QRGContents.Type.TEXT, 500)
         try {
@@ -180,12 +173,12 @@ class InsertStaffActivity : BaseActivity() {
                         }
                     }
                 }.addOnFailureListener {
-                    hideProgrss()
+                    hideProgress()
                 }
             }
 
         } catch (e: WriterException) {
-            hideProgrss()
+            hideProgress()
             e.printStackTrace()
         }
 
@@ -200,7 +193,7 @@ class InsertStaffActivity : BaseActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     //Key exists
-                    hideProgrss()
+                    hideProgress()
                     Toast.makeText(
                         this@InsertStaffActivity,
                         "Mã nhân viên đã tồn tại, vui lòng kiểm tra lại!",
@@ -212,7 +205,7 @@ class InsertStaffActivity : BaseActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                hideProgrss()
+                hideProgress()
             }
 
         })
@@ -223,7 +216,7 @@ class InsertStaffActivity : BaseActivity() {
         val myRef = database.getReference(Constants.CHILD_NODE_USER)
             .child(user.maNV ?: "-")
         myRef.setValue(user).addOnCompleteListener {
-            hideProgrss()
+            hideProgress()
             if (it.isSuccessful) {
                 Toast.makeText(
                     this,
@@ -239,7 +232,7 @@ class InsertStaffActivity : BaseActivity() {
                 ).show()
             }
         }.addOnCanceledListener {
-            hideProgrss()
+            hideProgress()
             Toast.makeText(
                 this,
                 "Thêm nhân viên thất bại, vui lòng kiểm tra lại!",

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/colorWhite"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/csHeader"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+            <ImageView
+                android:id="@+id/imgBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:text="@string/register"
+                android:textColor="@color/colorWhite"
+                android:textSize="17sp"
+                android:paddingStart="10dp"
+                app:layout_constraintStart_toEndOf="@id/imgBack"
+                app:layout_constraintBottom_toBottomOf="@id/imgBack"
+                app:layout_constraintTop_toTopOf="@id/imgBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--FullName-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/csFullName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="55dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/csHeader">
+
+            <EditText
+                android:id="@+id/etFullName"
+                android:inputType="textEmailAddress"
+                android:paddingStart="15dp"
+                app:layout_constraintStart_toEndOf="@id/imgFullName"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:background="@android:color/transparent"
+                android:hint="@string/fullname"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@color/colorText"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/imgFullName"
+                android:layout_marginEnd="20dp"
+                android:padding="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_name"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:tint="@color/colorText" />
+
+            <View
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorText" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--Email-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/llEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/csFullName">
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:inputType="textEmailAddress"
+                android:paddingStart="15dp"
+                app:layout_constraintStart_toEndOf="@id/imgEmail"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:background="@android:color/transparent"
+                android:hint="@string/email"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@color/colorText"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/imgEmail"
+                android:layout_marginEnd="20dp"
+                android:padding="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_baseline_email_24"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:tint="@color/colorText" />
+
+            <View
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorText" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--Phone-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/csPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/llEmail">
+
+            <EditText
+                android:id="@+id/etPhone"
+                android:inputType="phone"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:background="@android:color/transparent"
+                android:hint="@string/phone"
+                android:paddingLeft="15dp"
+                app:layout_constraintStart_toEndOf="@id/imgPhone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@color/colorText"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/imgPhone"
+                android:layout_marginEnd="20dp"
+                android:padding="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_baseline_phone_iphone_24"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:tint="@color/colorText" />
+
+            <View
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorText" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--Password-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/llPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/csPhone">
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:inputType="textPassword"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:background="@android:color/transparent"
+                android:hint="@string/password"
+                android:paddingStart="15dp"
+                app:layout_constraintStart_toEndOf="@id/imgPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@color/colorText"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/imgPassword"
+                android:layout_marginEnd="20dp"
+                android:padding="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_baseline_lock_24"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:tint="@color/colorText" />
+
+            <View
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorText" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--Password-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/csConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/llPassword">
+
+            <EditText
+                android:id="@+id/etConfirmPass"
+                android:inputType="textPassword"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:background="@android:color/transparent"
+                android:hint="@string/confirm_password"
+                android:paddingStart="15dp"
+                app:layout_constraintStart_toEndOf="@id/imgConfirmPass"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textColor="@color/colorText"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/imgConfirmPass"
+                android:layout_marginEnd="20dp"
+                android:padding="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_baseline_lock_24"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:tint="@color/colorText" />
+
+            <View
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorText" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="55dp"
+            android:layout_marginEnd="25dp"
+            android:background="@drawable/bg_button"
+            android:text="@string/register_title"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintTop_toBottomOf="@id/csConfirmPassword" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

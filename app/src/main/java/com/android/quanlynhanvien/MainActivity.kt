@@ -26,7 +26,6 @@ class MainActivity : BaseActivity() {
 
         setupActionBarWithNavController(navController)
 
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

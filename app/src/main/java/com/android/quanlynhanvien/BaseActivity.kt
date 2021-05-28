@@ -14,14 +14,14 @@ abstract class BaseActivity: AppCompatActivity() {
         supportActionBar?.hide()
     }
 
-     fun showProgrss() {
+     fun showProgress() {
         if(progressDialog != null && progressDialog?.isShowing == false) {
             progressDialog?.show()
         }
     }
 
 
-     fun hideProgrss() {
+     fun hideProgress() {
         if(progressDialog != null && progressDialog?.isShowing == true) {
             progressDialog?.cancel()
         }
