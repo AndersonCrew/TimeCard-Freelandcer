@@ -6,15 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.manage.ScanQRFragment">
 
-    <TextView
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/colorPrimaryDark"
-        android:text="Scan QR Code"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:textColor="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"/>
 
     <ImageView
         android:id="@+id/imgScan"

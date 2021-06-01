@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.android.quanlynhanvien.Constants
+import com.android.quanlynhanvien.PermissionUtil
 import com.android.quanlynhanvien.R
 import com.android.quanlynhanvien.model.User
 import com.android.quanlynhanvien.ui.InsertStaffActivity
@@ -243,11 +244,15 @@ class ManageStaffFragment : Fragment(), OnCreateContextMenuListener {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
         if(requestCode == EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE) {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (PermissionUtil.checkPermissions(requireContext(), PermissionUtil.permissionsStorage)) {
                 dialog?.onSaveFile()
             } else {
                 Toast.makeText(requireContext(), "External Storage permission needed. Please allow in App Settings for additional functionality", Toast.LENGTH_LONG).show()

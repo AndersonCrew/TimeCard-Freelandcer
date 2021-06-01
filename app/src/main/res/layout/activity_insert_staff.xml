@@ -60,6 +60,7 @@
         app:layout_constraintStart_toEndOf="@id/imgMaNV"
         app:layout_constraintEnd_toEndOf="parent"
         android:hint="Nhập mã nhân viên"
+        android:inputType="number"
         android:background="@android:color/transparent"
         android:textColor="@color/black"
         android:textSize="16sp"

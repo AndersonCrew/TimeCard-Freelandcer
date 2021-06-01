@@ -20,4 +20,10 @@
         android:contentDescription="@string/timecard"
         android:icon="@drawable/ic_check"/>
 
+    <item
+        android:id="@+id/report_fragment"
+        android:title="@string/report"
+        android:contentDescription="@string/report"
+        android:icon="@drawable/ic_baseline_analytics_24"/>
+
 </menu>

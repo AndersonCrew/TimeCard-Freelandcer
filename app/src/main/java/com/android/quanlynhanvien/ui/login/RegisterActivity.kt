@@ -9,10 +9,7 @@ import android.widget.Toast
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.appcompat.app.AppCompatActivity
-import com.android.quanlynhanvien.BaseActivity
-import com.android.quanlynhanvien.Constants
-import com.android.quanlynhanvien.MainStaffActivity
-import com.android.quanlynhanvien.R
+import com.android.quanlynhanvien.*
 import com.android.quanlynhanvien.databinding.ActivityRegisterBinding
 import com.android.quanlynhanvien.model.User
 import com.google.firebase.auth.FirebaseAuth
@@ -23,6 +20,7 @@ import com.google.firebase.storage.UploadTask
 import com.google.gson.Gson
 import com.google.zxing.WriterException
 import java.io.ByteArrayOutputStream
+import kotlin.random.Random
 
 class RegisterActivity : BaseActivity() {
     private var binding: ActivityRegisterBinding?= null
@@ -49,7 +47,6 @@ class RegisterActivity : BaseActivity() {
     }
 
     private fun registerAccount() {
-        showProgress()
         mAuth?.createUserWithEmailAndPassword(binding?.etEmail?.text.toString().toLowerCase(), binding?.etPassword?.text.toString())?.addOnCompleteListener {
             if(it.isSuccessful) {
                 //Generate QRCode and upload to server
@@ -102,6 +99,7 @@ class RegisterActivity : BaseActivity() {
     private fun generateQRCode(uuid: String) {
         val user = User(false, 0, null, "", "", binding?.etFullName?.text.toString(), "", binding?.etEmail?.text.toString())
 
+        user.maNV = Random(1000).nextInt().toString()
         val qrCode = QRGEncoder(Gson().toJson(user), null, QRGContents.Type.TEXT, 500)
         try {
             // Getting QR-Code as Bitmap
@@ -153,6 +151,7 @@ class RegisterActivity : BaseActivity() {
                     Toast.LENGTH_LONG
                 ).show()
 
+                SharePreferencesUtils(this).saveUser(user)
                 startActivity(Intent(this@RegisterActivity, MainStaffActivity::class.java))
                 finish()
             } else {

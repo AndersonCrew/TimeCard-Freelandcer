@@ -14,6 +14,7 @@
             android:id="@+id/action_firstFragment_to_secondFragment"
             app:destination="@id/second_fragment" />
     </fragment>
+
     <fragment
         android:id="@+id/second_fragment"
         android:name="com.android.quanlynhanvien.ui.manage.ScanQRFragment"
@@ -27,4 +28,10 @@
         android:name="com.android.quanlynhanvien.ui.manage.ManageTimeCardFragment"
         android:label="Fourth Fragment"
         tools:layout="@layout/fragment_gallery" />
+
+    <fragment
+        android:id="@+id/report_fragment"
+        android:name="com.android.quanlynhanvien.ui.manage.ReportFragment"
+        android:label="Report Fragment"
+        tools:layout="@layout/fragment_report" />
 </navigation>

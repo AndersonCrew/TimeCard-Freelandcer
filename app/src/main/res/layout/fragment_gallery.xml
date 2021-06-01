@@ -92,5 +92,5 @@
         app:layout_constraintTop_toBottomOf="@id/csHeader"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/item_staff" />
+        tools:listitem="@layout/item_check" />
 </androidx.constraintlayout.widget.ConstraintLayout>

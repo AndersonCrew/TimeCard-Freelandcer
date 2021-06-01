@@ -12,4 +12,5 @@ object Constants {
     const val HOUR_TIME_FORMAT = "hh:mm dd-MM-yyyy"
     const val SHARED_PREF_NAME = "SHARED_PREF_NAME"
     const val ACCESS_TOKEN = "ACCESS_TOKEN"
+    const val STORAGE_IMAGES = "STORAGE_IMAGES"
 }

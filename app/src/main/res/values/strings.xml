@@ -66,4 +66,35 @@
     <string name="nh_n_vi_n">Nhân viên</string>
     <string name="edit_profile">Chỉnh sửa trang cá nhân</string>
     <string name="update">Update</string>
+    <string name="empty"><![CDATA[<Empty>]]></string>
+    <string name="s_n_l_ng">Sản lượng</string>
+    <string name="done">Done</string>
+    <string name="report">Thống kê</string>
+    <string name="nhan_vien">Nhân Viên</string>
+    <string name="time_report">Thời gian</string>
+    <string name="month">Tháng</string>
+    <string name="year">Năm</string>
+
+    <string-array name="arrMonth">
+        <item>Tất cả</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+
+    <string-array name="arrYear">
+        <item>2021</item>
+        <item>2022</item>
+        <item>2023</item>
+    </string-array>
 </resources>

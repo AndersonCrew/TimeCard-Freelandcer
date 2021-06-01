@@ -12,7 +12,8 @@ data class User(
     var birthDay: String? = null,
     var email: String? = null,
     var maNV: String? = null,
-    var avatar: String? = null
+    var avatar: String? = null,
+    var phoneNumber: String? = null
 ): Serializable {
     var urlQRCode: String? = null
     var uuid: String? = null

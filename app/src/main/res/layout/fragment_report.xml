@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/tvStaffTitle"
+        android:text="@string/nhan_vien"
+        android:layout_margin="15dp"
+        android:fontFamily="@font/poppins_bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Spinner
+        android:id="@+id/spinnerStaff"
+        android:layout_marginStart="10dp"
+        app:layout_constraintTop_toTopOf="@id/tvStaffTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvStaffTitle"
+        app:layout_constraintStart_toEndOf="@id/tvStaffTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <TextView
+        android:id="@+id/tvMonth"
+        android:text="@string/month"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/poppins_bold"
+        app:layout_constraintTop_toBottomOf="@id/tvStaffTitle"
+        app:layout_constraintStart_toStartOf="@id/tvStaffTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Spinner
+        android:id="@+id/spinnerMonth"
+        android:layout_marginStart="10dp"
+        app:layout_constraintTop_toTopOf="@id/tvMonth"
+        app:layout_constraintBottom_toBottomOf="@id/tvMonth"
+        app:layout_constraintStart_toEndOf="@id/tvMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tvYear"
+        android:text="@string/year"
+        android:layout_marginStart="30dp"
+        android:fontFamily="@font/poppins_bold"
+        app:layout_constraintTop_toTopOf="@id/spinnerMonth"
+        app:layout_constraintBottom_toBottomOf="@id/spinnerMonth"
+        app:layout_constraintStart_toEndOf="@id/spinnerMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Spinner
+        android:id="@+id/spinnerYear"
+        android:layout_marginStart="10dp"
+        app:layout_constraintTop_toTopOf="@id/tvYear"
+        app:layout_constraintBottom_toBottomOf="@id/tvYear"
+        app:layout_constraintStart_toEndOf="@id/tvYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnLoc"
+        android:text="Lọc"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/tvMonth"
+        app:layout_constraintStart_toStartOf="@id/tvMonth"
+        android:gravity="center"
+        android:background="@drawable/bg_header_2"
+        android:layout_width="85dp"
+        android:layout_height="30dp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/csT"
+        android:visibility="gone"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/holo_red_dark"
+        app:layout_constraintTop_toBottomOf="@id/btnLoc"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:text="Ngày"
+            android:textColor="@color/white"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.5"
+            android:layout_width="0dp"
+            android:fontFamily="@font/poppins_bold"
+            android:layout_height="match_parent"/>
+
+        <View
+            android:background="@android:color/darker_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tvSanLuong"
+            android:text="Sản Lượng"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppins_bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+        <View
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginBottom="20dp"
+        android:id="@+id/rvReport"
+        android:visibility="gone"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_report"
+        app:layout_constraintTop_toBottomOf="@id/csT"
+        app:layout_constraintBottom_toTopOf="@id/tvText"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+
+
+    <TextView
+        android:id="@+id/tvText"
+        android:layout_marginBottom="50dp"
+        android:gravity="center"
+        android:text="Thống kê sản lượng"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

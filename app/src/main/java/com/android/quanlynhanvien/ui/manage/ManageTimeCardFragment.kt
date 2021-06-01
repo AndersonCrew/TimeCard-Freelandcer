@@ -1,6 +1,5 @@
 package com.android.quanlynhanvien.ui.manage
 
-import android.Manifest
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
@@ -10,25 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.cardview.widget.CardView
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.android.quanlynhanvien.Constants
 import com.android.quanlynhanvien.InsertTimeCardActivity
 import com.android.quanlynhanvien.R
 import com.android.quanlynhanvien.model.TimeCard
-import com.android.quanlynhanvien.model.TimeCardDate
-import com.android.quanlynhanvien.model.User
 import com.android.quanlynhanvien.ui.DetailTimeCardActivity
-import com.android.quanlynhanvien.ui.InsertStaffActivity
-import com.android.quanlynhanvien.ui.detail.DetailStaffActivity
-import com.android.quanlynhanvien.ui.dialog.ShowQrDialog
+import com.android.quanlynhanvien.ui.TimeCardAdapter
 import com.android.quanlynhanvien.ui.dialog.TimeCardDialog
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,7 +29,7 @@ class ManageTimeCardFragment : Fragment() {
     private var cardInsert: ImageView?= null
     private var rvTimeCard: RecyclerView?= null
     private var tvNoData: TextView?= null
-    private lateinit var adapter: TimeCardDateAdapter.TimeCardAdapter
+    private lateinit var adapter: TimeCardAdapter
     private var progressDialog: ProgressDialog?= null
     private var etSearch: EditText?= null
     private var listTimeCard: ArrayList<TimeCard> = arrayListOf()
@@ -61,6 +51,7 @@ class ManageTimeCardFragment : Fragment() {
         tvNoData = root.findViewById(R.id.tvNodata)
         etSearch = root.findViewById(R.id.etSearch)
         imgFilter = root.findViewById(R.id.imgFilter)
+        progressDialog = ProgressDialog(requireContext())
         getListFilter()
         initEvent()
         return root
@@ -122,7 +113,7 @@ class ManageTimeCardFragment : Fragment() {
 
         })
 
-        adapter = TimeCardDateAdapter.TimeCardAdapter(arrayListOf()) {
+        adapter = TimeCardAdapter(arrayListOf()) {
             DetailTimeCardActivity.start(it, requireActivity())
         }
 
@@ -137,34 +128,86 @@ class ManageTimeCardFragment : Fragment() {
         // Read from the database
 
         // Read from the database
-        showProgrss()
+
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
+                showProgrss()
                 listTimeCard = arrayListOf()
+                adapter.updateList(listTimeCard)
                 for(child in dataSnapshot.children) {
-                    for(childTimeCard in child.children) {
-                        val timeCard: TimeCard?= childTimeCard.getValue(TimeCard::class.java)
+                    //Child UUID
+                    child.key?.let {
+                        //Child UUID
+                        child.ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                for(childYear in snapshot.children) {
+                                    childYear.key?.let {
+                                        //Child Year
+                                        childYear.ref.addListenerForSingleValueEvent(object : ValueEventListener{
+                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                for(childMonth in snapshot.children) {
+                                                    //Child Month
+                                                    childMonth.key?.let {
 
-                        timeCard?.let {
-                            listTimeCard.add(it)
-                        }
+                                                        childMonth.ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                                //Child Day
+                                                                for(childDay in snapshot.children) {
+                                                                    childDay.key?.let {
+                                                                        childDay.ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                                                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                                                for(childTimeCard in snapshot.children) {
+                                                                                    val timeCard: TimeCard? = childTimeCard.getValue(TimeCard::class.java)
+                                                                                    timeCard?.let {timeCardDTO ->
+                                                                                        listTimeCard.add(timeCardDTO)
+                                                                                        adapter.addItem(timeCardDTO)
+                                                                                    }
+                                                                                }
+                                                                            }
+
+                                                                            override fun onCancelled(error: DatabaseError) {
+                                                                                hideProgrss()
+                                                                                Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
+                                                                            }
+
+                                                                        })
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            override fun onCancelled(error: DatabaseError) {
+                                                                hideProgrss()
+                                                                Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
+                                                            }
+
+                                                        })
+                                                    }
+                                                }
+                                            }
+
+                                            override fun onCancelled(error: DatabaseError) {
+                                                hideProgrss()
+                                                Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
+                                            }
+
+                                        })
+                                    }
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                hideProgrss()
+                                Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
+                            }
+
+                        })
                     }
-
-
                 }
+
 
                 hideProgrss()
-                if(!listTimeCard.isNullOrEmpty()) {
-                    tvNoData?.visibility = View.GONE
-                    rvTimeCard?.visibility = View.VISIBLE
-                    adapter.updateList(listTimeCard)
-                } else {
-                    tvNoData?.visibility = View.VISIBLE
-                    rvTimeCard?.visibility = View.GONE
-                }
-
             }
 
             override fun onCancelled(error: DatabaseError) {

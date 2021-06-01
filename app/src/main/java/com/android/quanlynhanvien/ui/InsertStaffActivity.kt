@@ -3,6 +3,7 @@ package com.android.quanlynhanvien.ui
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -13,9 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
-import com.android.quanlynhanvien.BaseActivity
-import com.android.quanlynhanvien.Constants
-import com.android.quanlynhanvien.R
+import com.android.quanlynhanvien.*
 import com.android.quanlynhanvien.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -30,6 +29,7 @@ import com.google.zxing.WriterException
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.random.Random
 
 
 class InsertStaffActivity : BaseActivity() {
@@ -41,6 +41,7 @@ class InsertStaffActivity : BaseActivity() {
     private var etMaNV: EditText? = null
     private var etDate: TextView? = null
     private var imgChooseTime: ImageView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_insert_staff)
@@ -94,7 +95,7 @@ class InsertStaffActivity : BaseActivity() {
 
                 else -> {
                     hideKeyboard(this)
-                    generateQRCode()
+                    checkMaNV()
                 }
             }
         }
@@ -140,21 +141,19 @@ class InsertStaffActivity : BaseActivity() {
     }
 
     private var qrImage : Bitmap? = null
-    private fun generateQRCode() {
-        val user = User()
-
+    private fun generateQRCode(uuid: String) {
+        val user = User(false, 0, null, "", "", etName?.text.toString(), etDate?.text.toString(), etEmail?.text.toString())
+        user.maNV = etMaNV?.text.toString()
         val qrCode = QRGEncoder(Gson().toJson(user), null, QRGContents.Type.TEXT, 500)
         try {
             // Getting QR-Code as Bitmap
             qrImage = qrCode.encodeAsBitmap()
             qrImage?.let {
-               //Save Bitmap into Storage
+                //Save Bitmap into Storage
                 // Create a Cloud Storage reference from the app
 
                 // Create a Cloud Storage reference from the app
-                val storageRef: StorageReference = FirebaseStorage.getInstance().reference.child(
-                    etMaNV?.text.toString()
-                )
+                val storageRef: StorageReference = FirebaseStorage.getInstance().reference.child(uuid)
 
                 val baos = ByteArrayOutputStream()
                 it.compress(Bitmap.CompressFormat.JPEG, 100, baos)
@@ -165,30 +164,29 @@ class InsertStaffActivity : BaseActivity() {
                     // Handle unsuccessful uploads
                 }.addOnSuccessListener {
 
-                    storageRef.downloadUrl.addOnSuccessListener { url ->
+                    storageRef.downloadUrl.addOnSuccessListener {url ->
                         url?.let {
                             val downloadUrl: Uri = url
                             user.urlQRCode = downloadUrl.toString()
-                            checkMaNV(user)
+                            user.uuid = uuid
+
+                            addUserDatabase(user)
                         }
                     }
-                }.addOnFailureListener {
-                    hideProgress()
                 }
             }
 
         } catch (e: WriterException) {
-            hideProgress()
             e.printStackTrace()
         }
 
     }
 
-    private fun checkMaNV(user: User) {
+    private fun checkMaNV() {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.reference.child(Constants.CHILD_NODE_USER)
 
-        myRef.orderByKey().equalTo(user.maNV ?: "").addListenerForSingleValueEvent(object :
+        myRef.orderByKey().equalTo(etMaNV?.text.toString()).addListenerForSingleValueEvent(object :
             ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -200,7 +198,7 @@ class InsertStaffActivity : BaseActivity() {
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
-                    addUserDatabase(user)
+                    registerAccount()
                 }
             }
 
@@ -211,23 +209,43 @@ class InsertStaffActivity : BaseActivity() {
         })
     }
 
+    private fun registerAccount() {
+        mAuth?.createUserWithEmailAndPassword(etEmail?.text.toString().toLowerCase(), Constants.DEFAULT_PASSWORD)?.addOnCompleteListener {
+            if(it.isSuccessful) {
+                //Generate QRCode and upload to server
+                generateQRCode(it.result?.user?.uid?: etEmail?.text.toString())
+
+            } else {
+                hideProgress()
+                val message = it.exception?.message?: "Something wrong, Please try again!"
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+            }
+        }?.addOnCanceledListener {
+            hideProgress()
+            Toast.makeText(this, "Something wrong, Please try again!", Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun addUserDatabase(user: User) {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference(Constants.CHILD_NODE_USER)
-            .child(user.maNV ?: "-")
+            .child(user.uuid?: "-")
         myRef.setValue(user).addOnCompleteListener {
             hideProgress()
             if (it.isSuccessful) {
                 Toast.makeText(
                     this,
-                    "Thêm nhân viên thành công!",
+                    "Insert Staff successfully!",
                     Toast.LENGTH_LONG
                 ).show()
+
+                SharePreferencesUtils(this).saveUser(user)
+                startActivity(Intent(this, MainStaffActivity::class.java))
                 finish()
             } else {
                 Toast.makeText(
                     this,
-                    "Thêm nhân viên thất bại, vui lòng kiểm tra lại!",
+                    "Insert Staff Fail, Please try again!",
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -235,7 +253,7 @@ class InsertStaffActivity : BaseActivity() {
             hideProgress()
             Toast.makeText(
                 this,
-                "Thêm nhân viên thất bại, vui lòng kiểm tra lại!",
+                "Insert Staff Fail, Please try again!",
                 Toast.LENGTH_LONG
             ).show()
         }
