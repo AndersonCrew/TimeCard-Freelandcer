@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.android.quanlynhanvien.*
 import com.android.quanlynhanvien.databinding.ActivityRegisterBinding
 import com.android.quanlynhanvien.model.User
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -96,10 +97,11 @@ class RegisterActivity : BaseActivity() {
     }
 
     private var qrImage : Bitmap? = null
+
     private fun generateQRCode(uuid: String) {
         val user = User(false, 0, null, "", "", binding?.etFullName?.text.toString(), "", binding?.etEmail?.text.toString())
 
-        user.maNV = Random(1000).nextInt().toString()
+        user.maNV = Random(0).nextInt(1000).toString()
         val qrCode = QRGEncoder(Gson().toJson(user), null, QRGContents.Type.TEXT, 500)
         try {
             // Getting QR-Code as Bitmap

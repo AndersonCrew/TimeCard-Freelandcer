@@ -13,6 +13,8 @@ import com.android.quanlynhanvien.BaseActivity
 import com.android.quanlynhanvien.Constants
 import com.android.quanlynhanvien.R
 import com.android.quanlynhanvien.model.User
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
 import java.util.*
@@ -87,17 +89,22 @@ class DetailStaffActivity : BaseActivity() {
                 hideProgress()
                 if (remove.isSuccessful) {
                     val database = FirebaseDatabase.getInstance()
-                    val myRef = database.getReference(Constants.TIMECARD_NODE).child(user?.maNV?: "-")
+                    val myRef =
+                        database.getReference(Constants.TIMECARD_NODE).child(user.uuid ?: "-")
                     myRef.removeValue().addOnCompleteListener {
                         hideProgress()
-                        if(it.isSuccessful) {
+                        if (it.isSuccessful) {
                             Toast.makeText(
                                 this,
                                 "Xóa nhân viên thành công!",
                                 Toast.LENGTH_LONG
                             ).show()
                         } else {
-                            Toast.makeText(this, "Vui lòng kiểm tra lại kết nối mạng!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                this,
+                                "Vui lòng kiểm tra lại kết nối mạng!",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
 
@@ -112,6 +119,26 @@ class DetailStaffActivity : BaseActivity() {
             }
     }
 
+    private fun deleteAuthUser() {
+        showProgress()
+        val userAuth = FirebaseAuth.getInstance().currentUser
+
+        // Get auth credentials from the user for re-authentication. The example below shows
+        // email and password credentials but there are multiple possible providers,
+        // such as GoogleAuthProvider or FacebookAuthProvider.
+        val credential = EmailAuthProvider.getCredential(user.email?: "-",Constants.DEFAULT_PASSWORD)
+        userAuth.reauthenticate(credential).addOnCompleteListener {
+            userAuth.delete().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    deleteUser()
+                } else {
+                    hideProgress()
+                }
+            }
+        }
+    }
+
+
     private fun editUser() {
         showProgress()
         hideKeyboard(this)
@@ -119,12 +146,12 @@ class DetailStaffActivity : BaseActivity() {
         val newEmail = etEmail?.text.toString()
         val newDate = etDate?.text.toString()
 
-        if(newName != user.name || newEmail != user.email || newDate != user.birthDay.toString()) {
+        if (newName != user.name || newEmail != user.email || newDate != user.birthDay.toString()) {
             //Delete in DB
             val newUser = User()
             newUser.urlQRCode = user.urlQRCode
             FirebaseDatabase.getInstance().getReference(Constants.CHILD_NODE_USER)
-                .child(user.maNV ?: "-").setValue(newUser)
+                .child(user.uuid ?: "-").setValue(newUser)
                 .addOnCompleteListener { update ->
                     hideProgress()
                     if (update.isSuccessful) {
@@ -162,7 +189,8 @@ class DetailStaffActivity : BaseActivity() {
     }
 
     private fun hideKeyboard(activity: Activity) {
-        val imm: InputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm: InputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         //Find the currently focused view, so we can grab the correct window token from it.
         var view = activity.currentFocus
         //If no view currently has focus, create a new one, just so we can grab a window token from it

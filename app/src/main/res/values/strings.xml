@@ -76,7 +76,6 @@
     <string name="year">Năm</string>
 
     <string-array name="arrMonth">
-        <item>Tất cả</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
