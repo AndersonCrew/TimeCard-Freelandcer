@@ -144,7 +144,7 @@ class ReportFragment : Fragment() {
         showProgrss()
         binding?.tvTime?.text = "Ngày"
         val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference(Constants.TIMECARD_NODE).child(userReport?.uuid?: "-")
+        val myRef = database.getReference(Constants.TIMECARD_NODE).child(userReport?.maNV?: "-")
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // This method is called once with the initial value and again

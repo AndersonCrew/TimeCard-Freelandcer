@@ -127,7 +127,7 @@ class EditProfileActivity : BaseActivity() {
         }
 
         FirebaseDatabase.getInstance().getReference(Constants.CHILD_NODE_USER)
-            .child(user?.uuid ?: "-").setValue(user)
+            .child(user?.maNV ?: "-").setValue(user)
             .addOnCompleteListener { update ->
                 hideProgress()
                 if (update.isSuccessful) {

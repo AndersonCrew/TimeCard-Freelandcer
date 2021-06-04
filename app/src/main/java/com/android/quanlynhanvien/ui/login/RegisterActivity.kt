@@ -14,7 +14,10 @@ import com.android.quanlynhanvien.databinding.ActivityRegisterBinding
 import com.android.quanlynhanvien.model.User
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
@@ -39,7 +42,7 @@ class RegisterActivity : BaseActivity() {
         binding?.btnRegister?.setOnClickListener {
             showProgress()
             if(checkValidation().isNullOrEmpty()) {
-                registerAccount()
+                checkEmail()
             } else {
                 hideProgress()
                 Toast.makeText(this, checkValidation(), Toast.LENGTH_LONG).show()
@@ -47,22 +50,6 @@ class RegisterActivity : BaseActivity() {
         }
     }
 
-    private fun registerAccount() {
-        mAuth?.createUserWithEmailAndPassword(binding?.etEmail?.text.toString().toLowerCase(), binding?.etPassword?.text.toString())?.addOnCompleteListener {
-            if(it.isSuccessful) {
-                //Generate QRCode and upload to server
-                generateQRCode(it.result?.user?.uid?: binding?.etEmail?.text.toString())
-
-            } else {
-                hideProgress()
-                val message = it.exception?.message?: "Something wrong, Please try again!"
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-            }
-        }?.addOnCanceledListener {
-            hideProgress()
-            Toast.makeText(this, "Something wrong, Please try again!", Toast.LENGTH_LONG).show()
-        }
-    }
 
     private fun checkValidation(): String {
         var error = ""
@@ -96,12 +83,13 @@ class RegisterActivity : BaseActivity() {
         return error
     }
 
+
     private var qrImage : Bitmap? = null
-
-    private fun generateQRCode(uuid: String) {
-        val user = User(false, 0, null, "", "", binding?.etFullName?.text.toString(), "", binding?.etEmail?.text.toString())
-
-        user.maNV = Random(0).nextInt(1000).toString()
+    private fun generateQRCode() {
+        val user = User(false, 0, null, "", "", binding?.etFullName?.text.toString(),
+            "", binding?.etEmail?.text.toString())
+        user.maNV = Random.nextInt(0, 100000).toString()
+        user.password = binding?.etPassword?.text.toString()
         val qrCode = QRGEncoder(Gson().toJson(user), null, QRGContents.Type.TEXT, 500)
         try {
             // Getting QR-Code as Bitmap
@@ -111,7 +99,7 @@ class RegisterActivity : BaseActivity() {
                 // Create a Cloud Storage reference from the app
 
                 // Create a Cloud Storage reference from the app
-                val storageRef: StorageReference = FirebaseStorage.getInstance().reference.child(uuid)
+                val storageRef: StorageReference = FirebaseStorage.getInstance().reference.child(user.maNV?: "-")
 
                 val baos = ByteArrayOutputStream()
                 it.compress(Bitmap.CompressFormat.JPEG, 100, baos)
@@ -126,7 +114,6 @@ class RegisterActivity : BaseActivity() {
                         url?.let {
                             val downloadUrl: Uri = url
                             user.urlQRCode = downloadUrl.toString()
-                            user.uuid = uuid
 
                             addUserDatabase(user)
                         }
@@ -140,10 +127,50 @@ class RegisterActivity : BaseActivity() {
 
     }
 
+    private fun checkEmail() {
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.reference.child(Constants.CHILD_NODE_USER)
+        myRef.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.childrenCount > 0) {
+                    for(child in snapshot.children) {
+                        var user: User? = child.getValue(User::class.java)
+                        user?.email?.let {
+                            if(it == binding?.etEmail?.text.toString()) {
+                                Toast.makeText(
+                                    this@RegisterActivity,
+                                    "Email đã tồn tại, vui lòng kiểm tra lại!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                                hideProgress()
+                                return
+                            }
+                        }
+                    }
+
+                    generateQRCode()
+                } else {
+                    generateQRCode()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                hideProgress()
+                Toast.makeText(
+                    this@RegisterActivity,
+                    "Something wrong! Please try again!",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        })
+    }
+
     private fun addUserDatabase(user: User) {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference(Constants.CHILD_NODE_USER)
-            .child(user.uuid?: "-")
+            .child(user.maNV?: "-")
         myRef.setValue(user).addOnCompleteListener {
             hideProgress()
             if (it.isSuccessful) {
@@ -154,7 +181,7 @@ class RegisterActivity : BaseActivity() {
                 ).show()
 
                 SharePreferencesUtils(this).saveUser(user)
-                startActivity(Intent(this@RegisterActivity, MainStaffActivity::class.java))
+                startActivity(Intent(this, MainStaffActivity::class.java))
                 finish()
             } else {
                 Toast.makeText(

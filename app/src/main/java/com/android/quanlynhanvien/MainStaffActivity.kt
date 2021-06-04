@@ -57,7 +57,7 @@ class MainStaffActivity : BaseActivity() {
         }
 
         val myRef = FirebaseDatabase.getInstance().getReference(Constants.TIMECARD_NODE)
-            .child(SharePreferencesUtils(this@MainStaffActivity).getUser()?.uuid ?: "-")
+            .child(SharePreferencesUtils(this@MainStaffActivity).getUser()?.maNV ?: "-")
             .child(year.toString())
             .child(month.toString())
             .child(day.toString())

@@ -13,8 +13,8 @@ data class User(
     var email: String? = null,
     var maNV: String? = null,
     var avatar: String? = null,
-    var phoneNumber: String? = null
+    var phoneNumber: String? = null,
+    var password: String?= null
 ): Serializable {
     var urlQRCode: String? = null
-    var uuid: String? = null
 }

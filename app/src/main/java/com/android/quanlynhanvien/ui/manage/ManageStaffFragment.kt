@@ -86,19 +86,6 @@ class ManageStaffFragment : Fragment(), OnCreateContextMenuListener {
         listFilerChosen.add(0)
     }
 
-    private fun showProgrss() {
-        if(progressDialog != null && progressDialog?.isShowing == false) {
-            progressDialog?.show()
-        }
-    }
-
-
-    private fun hideProgrss() {
-        if(progressDialog != null && progressDialog?.isShowing == true) {
-            progressDialog?.cancel()
-        }
-    }
-
     private fun initEvent() {
         etSearch?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -165,7 +152,6 @@ class ManageStaffFragment : Fragment(), OnCreateContextMenuListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                showProgrss()
                 listStaff = arrayListOf()
                 for(child in dataSnapshot.children) {
                     val user: User? = child.getValue(User::class.java)
@@ -174,7 +160,6 @@ class ManageStaffFragment : Fragment(), OnCreateContextMenuListener {
                     }
                 }
 
-                hideProgrss()
                 if(!listStaff.isNullOrEmpty()) {
                     tvNoData?.visibility = View.GONE
                     llTitle?.visibility = View.VISIBLE
@@ -189,7 +174,6 @@ class ManageStaffFragment : Fragment(), OnCreateContextMenuListener {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                hideProgrss()
                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
             }
         })

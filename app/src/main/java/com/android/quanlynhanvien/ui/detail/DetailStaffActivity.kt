@@ -90,7 +90,7 @@ class DetailStaffActivity : BaseActivity() {
                 if (remove.isSuccessful) {
                     val database = FirebaseDatabase.getInstance()
                     val myRef =
-                        database.getReference(Constants.TIMECARD_NODE).child(user.uuid ?: "-")
+                        database.getReference(Constants.TIMECARD_NODE).child(user.maNV ?: "-")
                     myRef.removeValue().addOnCompleteListener {
                         hideProgress()
                         if (it.isSuccessful) {
@@ -151,7 +151,7 @@ class DetailStaffActivity : BaseActivity() {
             val newUser = User()
             newUser.urlQRCode = user.urlQRCode
             FirebaseDatabase.getInstance().getReference(Constants.CHILD_NODE_USER)
-                .child(user.uuid ?: "-").setValue(newUser)
+                .child(user.maNV ?: "-").setValue(newUser)
                 .addOnCompleteListener { update ->
                     hideProgress()
                     if (update.isSuccessful) {

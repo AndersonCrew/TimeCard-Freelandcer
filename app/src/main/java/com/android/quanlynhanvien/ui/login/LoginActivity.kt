@@ -32,22 +32,26 @@ class LoginActivity : BaseActivity() {
                 Toast.makeText(this, "Email or Password is empty!", Toast.LENGTH_LONG).show()
             } else {
                 showProgress()
-                mAuth?.signInWithEmailAndPassword(binding?.etEmail?.text.toString(), binding?.etPassword?.text.toString())?.addOnCompleteListener {
-                    if(it.isSuccessful) {
-                        if(binding?.etEmail?.text.toString() != Constants.EMAIL_ADMIN_DEFAULT) {
-                            getDataStaff(it.result?.user?.uid?:"")
-                        } else {
+                if(binding?.etEmail?.text.toString() == Constants.EMAIL_ADMIN_DEFAULT) {
+                    mAuth?.signInWithEmailAndPassword(binding?.etEmail?.text.toString(), binding?.etPassword?.text.toString())?.addOnCompleteListener {
+                        if(it.isSuccessful) {
+                            hideProgress()
+                            SharePreferencesUtils(this).setBoolean(Constants.IS_LOGIN, true)
+                            SharePreferencesUtils(this).saveUser(null)
                             startActivity(Intent(this, MainActivity::class.java))
                             finish()
+                        } else {
+                            hideProgress()
+                            Toast.makeText(this, "Email or Password is not match!", Toast.LENGTH_LONG).show()
                         }
-                    } else {
+                    }?.addOnCanceledListener {
                         hideProgress()
                         Toast.makeText(this, "Email or Password is not match!", Toast.LENGTH_LONG).show()
                     }
-                }?.addOnCanceledListener {
-                    hideProgress()
-                    Toast.makeText(this, "Email or Password is not match!", Toast.LENGTH_LONG).show()
+                } else {
+                    logInUser ()
                 }
+
             }
         }
 
@@ -56,26 +60,40 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    private fun getDataStaff(uuid: String) {
+    private fun logInUser() {
         val database = FirebaseDatabase.getInstance()
-        database.getReference(Constants.CHILD_NODE_USER)
-            .child(uuid).addListenerForSingleValueEvent(object: ValueEventListener {
-                override fun onCancelled(error: DatabaseError) {
-                    hideProgress()
-                    Toast.makeText(this@LoginActivity, error.message, Toast.LENGTH_LONG).show()
-                }
-
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val user = snapshot.getValue(User::class.java)
-                    user?.let {
-                        hideProgress()
-                        val share = SharePreferencesUtils(this@LoginActivity)
-                        share.saveUser(it)
-                        startActivity(Intent(this@LoginActivity, MainStaffActivity::class.java))
-                        finish()
+        val myRef = database.reference.child(Constants.CHILD_NODE_USER)
+        myRef.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.childrenCount > 0) {
+                    for(child in snapshot.children) {
+                        var user: User? = child.getValue(User::class.java)
+                        if(user?.email == binding?.etEmail?.text.toString() && user.password == binding?.etPassword?.text.toString()) {
+                            hideProgress()
+                            SharePreferencesUtils(this@LoginActivity).saveUser(user)
+                            SharePreferencesUtils(this@LoginActivity).setBoolean(Constants.IS_LOGIN, true)
+                            startActivity(Intent(this@LoginActivity, MainStaffActivity::class.java))
+                            return
+                        }
                     }
-                }
 
-            })
+                    hideProgress()
+                    Toast.makeText(this@LoginActivity, "Email or Password is not match!", Toast.LENGTH_LONG).show()
+                } else {
+                    hideProgress()
+                    Toast.makeText(this@LoginActivity, "Email or Password is not match!", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                hideProgress()
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Something wrong! Please try again!",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        })
     }
 }

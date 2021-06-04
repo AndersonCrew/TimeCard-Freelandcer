@@ -13,4 +13,5 @@ object Constants {
     const val SHARED_PREF_NAME = "SHARED_PREF_NAME"
     const val ACCESS_TOKEN = "ACCESS_TOKEN"
     const val STORAGE_IMAGES = "STORAGE_IMAGES"
+    const val IS_LOGIN = "IS_LOGIN"
 }

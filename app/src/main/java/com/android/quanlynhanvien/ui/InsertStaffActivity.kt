@@ -141,9 +141,11 @@ class InsertStaffActivity : BaseActivity() {
     }
 
     private var qrImage : Bitmap? = null
-    private fun generateQRCode(uuid: String) {
-        val user = User(false, 0, null, "", "", etName?.text.toString(), etDate?.text.toString(), etEmail?.text.toString())
+    private fun generateQRCode() {
+        val user = User(false, 0, null, "", "", etName?.text.toString(),
+            etDate?.text.toString(), etEmail?.text.toString())
         user.maNV = etMaNV?.text.toString()
+        user.password = Constants.DEFAULT_PASSWORD
         val qrCode = QRGEncoder(Gson().toJson(user), null, QRGContents.Type.TEXT, 500)
         try {
             // Getting QR-Code as Bitmap
@@ -153,7 +155,7 @@ class InsertStaffActivity : BaseActivity() {
                 // Create a Cloud Storage reference from the app
 
                 // Create a Cloud Storage reference from the app
-                val storageRef: StorageReference = FirebaseStorage.getInstance().reference.child(uuid)
+                val storageRef: StorageReference = FirebaseStorage.getInstance().reference.child(etMaNV?.text.toString())
 
                 val baos = ByteArrayOutputStream()
                 it.compress(Bitmap.CompressFormat.JPEG, 100, baos)
@@ -168,7 +170,6 @@ class InsertStaffActivity : BaseActivity() {
                         url?.let {
                             val downloadUrl: Uri = url
                             user.urlQRCode = downloadUrl.toString()
-                            user.uuid = uuid
 
                             addUserDatabase(user)
                         }
@@ -198,38 +199,65 @@ class InsertStaffActivity : BaseActivity() {
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
-                    registerAccount()
+                    checkEmail()
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 hideProgress()
+                Toast.makeText(
+                    this@InsertStaffActivity,
+                    "Something wrong! Please try again!",
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
         })
     }
 
-    private fun registerAccount() {
-        mAuth?.createUserWithEmailAndPassword(etEmail?.text.toString().toLowerCase(), Constants.DEFAULT_PASSWORD)?.addOnCompleteListener {
-            if(it.isSuccessful) {
-                //Generate QRCode and upload to server
-                generateQRCode(it.result?.user?.uid?: etEmail?.text.toString())
+    private fun checkEmail() {
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.reference.child(Constants.CHILD_NODE_USER)
+        myRef.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.childrenCount > 0) {
+                    for(child in snapshot.children) {
+                        var user: User? = child.getValue(User::class.java)
+                        user?.email?.let {
+                            if(it == etEmail?.text.toString()) {
+                                Toast.makeText(
+                                    this@InsertStaffActivity,
+                                    "Email đã tồn tại, vui lòng kiểm tra lại!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                hideProgress()
+                                return
+                            }
+                        }
+                    }
 
-            } else {
-                hideProgress()
-                val message = it.exception?.message?: "Something wrong, Please try again!"
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+                    generateQRCode()
+                } else {
+                    generateQRCode()
+                }
             }
-        }?.addOnCanceledListener {
-            hideProgress()
-            Toast.makeText(this, "Something wrong, Please try again!", Toast.LENGTH_LONG).show()
-        }
+
+            override fun onCancelled(error: DatabaseError) {
+                hideProgress()
+                Toast.makeText(
+                    this@InsertStaffActivity,
+                    "Something wrong! Please try again!",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        })
     }
 
     private fun addUserDatabase(user: User) {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference(Constants.CHILD_NODE_USER)
-            .child(user.uuid?: "-")
+            .child(user.maNV?: "-")
         myRef.setValue(user).addOnCompleteListener {
             hideProgress()
             if (it.isSuccessful) {
@@ -238,9 +266,6 @@ class InsertStaffActivity : BaseActivity() {
                     "Insert Staff successfully!",
                     Toast.LENGTH_LONG
                 ).show()
-
-                SharePreferencesUtils(this).saveUser(user)
-                startActivity(Intent(this, MainStaffActivity::class.java))
                 finish()
             } else {
                 Toast.makeText(
