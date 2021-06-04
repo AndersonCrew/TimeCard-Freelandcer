@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.view.*
 import android.view.View.OnCreateContextMenuListener
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -17,11 +18,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.quanlynhanvien.Constants
 import com.android.quanlynhanvien.PermissionUtil
 import com.android.quanlynhanvien.R
+import com.android.quanlynhanvien.SharePreferencesUtils
 import com.android.quanlynhanvien.model.User
 import com.android.quanlynhanvien.ui.InsertStaffActivity
 import com.android.quanlynhanvien.ui.detail.DetailStaffActivity
 import com.android.quanlynhanvien.ui.dialog.ShowQrDialog
 import com.android.quanlynhanvien.ui.dialog.TimeCardDialog
+import com.android.quanlynhanvien.ui.login.LoginActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -34,11 +38,12 @@ import kotlinx.coroutines.withContext
 
 class ManageStaffFragment : Fragment(), OnCreateContextMenuListener {
 
-    private var cardInsert: ImageView?= null
+    private var cardInsert: CardView?= null
     private var rvStaff: RecyclerView?= null
     private var llTitle: LinearLayout?= null
     private var tvNoData: TextView?= null
     private var imgFilter: ImageView?= null
+    private var btnLogout: ImageView?= null
     private lateinit var adapter: StaffAdapter
     private var dialog: ShowQrDialog?= null
     private var etSearch: EditText?= null
@@ -61,6 +66,7 @@ class ManageStaffFragment : Fragment(), OnCreateContextMenuListener {
         tvNoData = root.findViewById(R.id.tvNodata)
         imgFilter = root.findViewById(R.id.imgFilter)
         etSearch = root.findViewById(R.id.etSearch)
+        btnLogout = root.findViewById(R.id.btnLogout)
 
         imgFilter?.setOnCreateContextMenuListener(this)
         registerForContextMenu(imgFilter!!)
@@ -154,11 +160,12 @@ class ManageStaffFragment : Fragment(), OnCreateContextMenuListener {
         // Read from the database
 
         // Read from the database
-        showProgrss()
+
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
+                showProgrss()
                 listStaff = arrayListOf()
                 for(child in dataSnapshot.children) {
                     val user: User? = child.getValue(User::class.java)
@@ -186,6 +193,15 @@ class ManageStaffFragment : Fragment(), OnCreateContextMenuListener {
                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
             }
         })
+
+        btnLogout?.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            SharePreferencesUtils(requireContext()).also {
+                it.saveUser(null)
+                startActivity(Intent(requireContext(), LoginActivity::class.java))
+                requireActivity().finish()
+            }
+        }
     }
 
     private fun searchList(text: String){

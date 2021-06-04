@@ -18,7 +18,7 @@
         <ImageView
             android:id="@+id/imgFilter"
             android:layout_marginRight="5dp"
-            app:layout_constraintEnd_toStartOf="@id/imgInsert"
+            app:layout_constraintEnd_toStartOf="@id/btnLogout"
             android:src="@drawable/ic_filter"
             android:layout_width="30dp"
             android:padding="4dp"
@@ -26,12 +26,12 @@
             app:tint="@color/white" />
 
         <ImageView
-            android:id="@+id/imgInsert"
+           android:id="@+id/btnLogout"
             android:layout_marginRight="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_add_staff"
+            android:src="@drawable/ic_baseline_logout_24"
             android:layout_width="30dp"
             android:padding="4dp"
             android:layout_height="match_parent"
@@ -94,4 +94,20 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_staff" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imgInsert"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cardCornerRadius="25dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp">
+        <ImageView
+            android:background="@color/colorPrimaryDark"
+            android:padding="10dp"
+            android:src="@drawable/ic_add_staff"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

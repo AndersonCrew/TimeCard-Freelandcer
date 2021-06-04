@@ -129,10 +129,12 @@ class ManageTimeCardFragment : Fragment() {
 
         // Read from the database
 
+
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
+
                 showProgrss()
                 listTimeCard = arrayListOf()
                 adapter.updateList(listTimeCard)
@@ -158,6 +160,7 @@ class ManageTimeCardFragment : Fragment() {
                                                                     childDay.key?.let {
                                                                         childDay.ref.addListenerForSingleValueEvent(object : ValueEventListener {
                                                                             override fun onDataChange(snapshot: DataSnapshot) {
+                                                                                hideProgrss()
                                                                                 for(childTimeCard in snapshot.children) {
                                                                                     val timeCard: TimeCard? = childTimeCard.getValue(TimeCard::class.java)
                                                                                     timeCard?.let {timeCardDTO ->
@@ -205,7 +208,6 @@ class ManageTimeCardFragment : Fragment() {
                         })
                     }
                 }
-
 
                 hideProgrss()
             }
