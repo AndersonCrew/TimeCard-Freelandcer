@@ -292,10 +292,12 @@
                 android:textSize="16sp"
                 android:layout_marginTop="15dp"
                 android:hint="@string/empty"
+                android:background="@android:color/transparent"
                 android:textColor="@color/colorBlack"
-                app:layout_constraintStart_toStartOf="@id/tvTitleTonGiao"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvTitleTonGiao"
-                android:layout_width="match_parent"
+                app:layout_constraintStart_toStartOf="@id/tvTitleTonGiao"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
 
             <ImageView
@@ -308,7 +310,6 @@
                 android:layout_width="21dp"
                 android:layout_height="21dp"
                 app:tint="@color/colorText" />
-
 
 
             <View
