@@ -148,6 +148,7 @@ class InsertTimeCardActivity : BaseActivity() {
         datePickerDialog.show()
     }
 
+
     private fun insertTimeCard() {
         if(listStaff.isNullOrEmpty()) {
             Toast.makeText(this, "Danh sách nhân viên rỗng!", Toast.LENGTH_LONG).show()
@@ -161,20 +162,43 @@ class InsertTimeCardActivity : BaseActivity() {
 
 
         showProgress()
-        val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference(Constants.TIMECARD_NODE).child(listStaff[positionUserChosen].maNV?: "-").child(timeChange.toString())
-        val timeCard = TimeCard(listStaff[positionUserChosen], timeChange)
-        myRef.setValue(timeCard).addOnCompleteListener {
-            hideProgress()
-            if(it.isSuccessful) {
-                Toast.makeText(this, "Chấm công thành công!", Toast.LENGTH_LONG).show()
-                finish()
-            } else {
-                Toast.makeText(this, it.exception?.message?: "Chấm công thất bại, vui lòng thử lại!", Toast.LENGTH_LONG).show()
-            }
-        }.addOnFailureListener {
-            hideProgress()
-            Toast.makeText(this, it.message?: "Chấm công thất bại, vui lòng thử lại!", Toast.LENGTH_LONG).show()
+        val cal = Calendar.getInstance()
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        val month = cal.get(Calendar.MONTH) + 1
+        val year = cal.get(Calendar.YEAR)
+
+        val timeCard = TimeCard()
+        timeCard.apply {
+            user = listStaff[positionUserChosen]
+            timeCheck = System.currentTimeMillis()
+            typeCheck = 0
         }
+
+        val myRef = FirebaseDatabase.getInstance().getReference(Constants.TIMECARD_NODE)
+            .child(listStaff[positionUserChosen].maNV ?: "-")
+            .child(year.toString())
+            .child(month.toString())
+            .child(day.toString())
+
+
+        val key = myRef.push().key ?: return
+        myRef.child(key).setValue(timeCard)
+            .addOnCompleteListener { update ->
+                hideProgress()
+                if (update.isSuccessful) {
+                    Toast.makeText(
+                        this,
+                        "Chấm công thành công!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Vui lòng kiểm tra lại kết nối mạng!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
     }
 }

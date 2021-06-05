@@ -57,18 +57,6 @@ class ManageTimeCardFragment : Fragment() {
         return root
     }
 
-    private fun showProgrss() {
-        if(progressDialog != null && progressDialog?.isShowing == false) {
-            progressDialog?.show()
-        }
-    }
-
-
-    private fun hideProgrss() {
-        if(progressDialog != null && progressDialog?.isShowing == true) {
-            progressDialog?.cancel()
-        }
-    }
 
     private fun getListFilter() {
         listFiler.clear()
@@ -135,7 +123,6 @@ class ManageTimeCardFragment : Fragment() {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
 
-                showProgrss()
                 listTimeCard = arrayListOf()
                 adapter.updateList(listTimeCard)
                 for(child in dataSnapshot.children) {
@@ -160,7 +147,6 @@ class ManageTimeCardFragment : Fragment() {
                                                                     childDay.key?.let {
                                                                         childDay.ref.addListenerForSingleValueEvent(object : ValueEventListener {
                                                                             override fun onDataChange(snapshot: DataSnapshot) {
-                                                                                hideProgrss()
                                                                                 for(childTimeCard in snapshot.children) {
                                                                                     val timeCard: TimeCard? = childTimeCard.getValue(TimeCard::class.java)
                                                                                     timeCard?.let {timeCardDTO ->
@@ -171,7 +157,6 @@ class ManageTimeCardFragment : Fragment() {
                                                                             }
 
                                                                             override fun onCancelled(error: DatabaseError) {
-                                                                                hideProgrss()
                                                                                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
                                                                             }
 
@@ -181,7 +166,6 @@ class ManageTimeCardFragment : Fragment() {
                                                             }
 
                                                             override fun onCancelled(error: DatabaseError) {
-                                                                hideProgrss()
                                                                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
                                                             }
 
@@ -191,7 +175,6 @@ class ManageTimeCardFragment : Fragment() {
                                             }
 
                                             override fun onCancelled(error: DatabaseError) {
-                                                hideProgrss()
                                                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
                                             }
 
@@ -201,7 +184,6 @@ class ManageTimeCardFragment : Fragment() {
                             }
 
                             override fun onCancelled(error: DatabaseError) {
-                                hideProgrss()
                                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
                             }
 
@@ -209,11 +191,9 @@ class ManageTimeCardFragment : Fragment() {
                     }
                 }
 
-                hideProgrss()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                hideProgrss()
                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
             }
         })

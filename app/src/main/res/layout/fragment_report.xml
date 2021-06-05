@@ -77,6 +77,17 @@
         android:layout_width="85dp"
         android:layout_height="30dp"/>
 
+    <TextView
+        android:id="@+id/tvNoData"
+        android:text="No Data"
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnLoc"
+        app:layout_constraintBottom_toTopOf="@id/tvText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/csT"
         android:visibility="gone"

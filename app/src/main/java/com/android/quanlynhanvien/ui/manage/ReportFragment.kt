@@ -162,27 +162,36 @@ class ReportFragment : Fragment() {
                                 val sanLuong = SanLuong()
                                 sanLuong.time = childDay.key
                                 var sanluongKg = 0
+                                var hasCheckOut = false
                                 childDay.ref.addListenerForSingleValueEvent(object : ValueEventListener {
                                     override fun onDataChange(snapshot: DataSnapshot) {
                                         for(childTimeCard in snapshot.children) {
                                             val timeCard: TimeCard? = childTimeCard.getValue(
                                                 TimeCard::class.java)
-                                            timeCard?.let {timeCardDTO ->
-                                                sanluongKg += timeCardDTO.sanluong?: 0
+                                            if(timeCard == null || timeCard.typeCheck == 0) {
+                                                break
+                                            } else {
+                                                hasCheckOut = true
+                                                sanluongKg += timeCard.sanluong?: 0
                                             }
                                         }
 
-                                        sanLuong.sanluong = sanluongKg
-                                        listReport.add(sanLuong)
-                                        adapter?.addItem(sanLuong)
+                                        if(hasCheckOut) {
+                                            sanLuong.sanluong = sanluongKg
+                                            listReport.add(sanLuong)
+                                            adapter?.addItem(sanLuong)
+                                        }
+
 
                                         hideProgrss()
                                         if(listReport.size > 0) {
                                             binding?.csT?.visibility = View.VISIBLE
                                             binding?.rvReport?.visibility = View.VISIBLE
+                                            binding?.tvNoData?.visibility = View.GONE
                                         } else {
                                             binding?.csT?.visibility = View.GONE
                                             binding?.rvReport?.visibility = View.GONE
+                                            binding?.tvNoData?.visibility = View.VISIBLE
                                         }
                                     }
 

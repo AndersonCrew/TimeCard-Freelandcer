@@ -90,6 +90,7 @@ class RegisterActivity : BaseActivity() {
             "", binding?.etEmail?.text.toString())
         user.maNV = Random.nextInt(0, 100000).toString()
         user.password = binding?.etPassword?.text.toString()
+        user.phoneNumber = binding?.etPhone?.text.toString()
         val qrCode = QRGEncoder(Gson().toJson(user), null, QRGContents.Type.TEXT, 500)
         try {
             // Getting QR-Code as Bitmap

@@ -44,6 +44,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"/>
 
+            <TextView
+                android:text="KG"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toTopOf="@id/etsanLuong"
+                app:layout_constraintBottom_toBottomOf="@id/etsanLuong"
+                app:layout_constraintEnd_toEndOf="@id/etsanLuong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
             <View
                 app:layout_constraintStart_toStartOf="@id/etsanLuong"
                 app:layout_constraintEnd_toEndOf="@id/etsanLuong"

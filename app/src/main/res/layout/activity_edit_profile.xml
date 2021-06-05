@@ -281,11 +281,10 @@
                 android:textSize="11sp"
                 android:text="@string/tongiao"
                 android:layout_marginTop="20dp"
-                app:layout_constraintTop_toBottomOf="@id/vGender"
+                app:layout_constraintTop_toBottomOf="@id/vAddress"
                 app:layout_constraintStart_toStartOf="@id/tvTitleAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-
 
             <EditText
                 android:id="@+id/tvReligion"
@@ -296,7 +295,7 @@
                 android:textColor="@color/colorBlack"
                 app:layout_constraintStart_toStartOf="@id/tvTitleTonGiao"
                 app:layout_constraintTop_toBottomOf="@id/tvTitleTonGiao"
-                android:layout_width="70dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <ImageView
@@ -311,51 +310,13 @@
                 app:tint="@color/colorText" />
 
 
-            <TextView
-                android:id="@+id/tvTitleGender"
-                android:textSize="11sp"
-                android:text="@string/gender"
-                android:visibility="gone"
-                android:layout_marginTop="20dp"
-                app:layout_constraintTop_toBottomOf="@id/vGender"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvTitleTonGiao"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <EditText
-                android:id="@+id/tvGender"
-                tools:text="Nam"
-                android:visibility="gone"
-                android:textSize="16sp"
-                android:layout_marginTop="15dp"
-                android:hint="@string/empty"
-                android:textColorHint="@color/colorHint"
-                android:textColor="@color/colorBlack"
-                app:layout_constraintStart_toStartOf="@id/tvTitleGender"
-                app:layout_constraintTop_toBottomOf="@id/tvTitleGender"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"/>
-
-            <ImageView
-                android:alpha="0.7"
-                android:visibility="gone"
-                android:src="@drawable/ic_baseline_transgender_24"
-                android:layout_marginEnd="15dp"
-                app:layout_constraintEnd_toStartOf="@id/tvTitleGender"
-                app:layout_constraintBottom_toBottomOf="@id/tvGender"
-                app:layout_constraintTop_toTopOf="@id/tvGender"
-                android:layout_width="21dp"
-                android:layout_height="21dp"
-                app:tint="@color/colorText" />
 
             <View
                 android:id="@+id/vGender"
                 android:background="@color/colorBlack"
                 android:alpha="0.6"
-                android:visibility="gone"
                 android:layout_marginTop="10dp"
-                app:layout_constraintTop_toBottomOf="@id/tvAddress"
+                app:layout_constraintTop_toBottomOf="@id/tvReligion"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"/>
 
@@ -395,6 +356,15 @@
                 app:layout_constraintBottom_toBottomOf="@id/imgAddress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
+
+            <View
+                android:id="@+id/vAddress"
+                android:background="@color/colorBlack"
+                android:alpha="0.6"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/tvAddress"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"/>
 
             <TextView
                 android:id="@+id/btnUpdate"

@@ -15,7 +15,10 @@ import com.android.quanlynhanvien.R
 import com.android.quanlynhanvien.model.User
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -55,7 +58,7 @@ class DetailStaffActivity : BaseActivity() {
         imgBack?.setOnClickListener { onBackPressed() }
 
         btnDelete?.setOnClickListener { deleteUser() }
-        btnEdit?.setOnClickListener { editUser() }
+        btnEdit?.setOnClickListener { checkEmail() }
         btnChangeTime?.setOnClickListener { showCalendarDialog() }
     }
 
@@ -77,6 +80,44 @@ class DetailStaffActivity : BaseActivity() {
         )
 
         datePickerDialog.show()
+    }
+
+    private fun checkEmail() {
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.reference.child(Constants.CHILD_NODE_USER)
+        myRef.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.childrenCount > 0) {
+                    for(child in snapshot.children) {
+                        var user: User? = child.getValue(User::class.java)
+                        user?.email?.let {
+                            if(it == etEmail?.text.toString()) {
+                                Toast.makeText(
+                                    this@DetailStaffActivity,
+                                    "Email đã tồn tại, vui lòng kiểm tra lại!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                                hideProgress()
+                                return
+                            }
+                        }
+                    }
+
+                    editUser()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                hideProgress()
+                Toast.makeText(
+                    this@DetailStaffActivity,
+                    "Something wrong! Please try again!",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        })
     }
 
     private fun deleteUser() {

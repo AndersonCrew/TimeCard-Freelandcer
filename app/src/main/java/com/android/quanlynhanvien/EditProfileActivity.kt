@@ -69,7 +69,6 @@ class EditProfileActivity : BaseActivity() {
         binding?.tvAddress?.setText(if(!user.address.isNullOrEmpty()) user.address else "")
         binding?.tvPhone?.setText(if(!user.phoneNumber.isNullOrEmpty()) user.phoneNumber else "")
         binding?.tvReligion?.setText(if(!user.dantoc.isNullOrEmpty()) user.dantoc else "")
-        binding?.tvGender?.setText(if(user.gioitinh == 0) "Nam" else "Nữ")
 
         binding?.imgChooseTime?.setOnClickListener {
             chooseDate()
