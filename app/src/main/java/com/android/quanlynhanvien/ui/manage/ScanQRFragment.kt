@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.android.quanlynhanvien.Constants
 import com.android.quanlynhanvien.R
+import com.android.quanlynhanvien.SharePreferencesUtils
 import com.android.quanlynhanvien.model.TimeCard
 import com.android.quanlynhanvien.model.User
 import com.google.firebase.database.FirebaseDatabase
@@ -65,20 +66,7 @@ class ScanQRFragment : Fragment() {
                     // Converting the data to json format
                    val jsonUser = Gson().fromJson(result.contents, User::class.java)
                     jsonUser?.let {user ->
-                        val cal = Calendar.getInstance()
-                        val database = FirebaseDatabase.getInstance()
-                        val currentTime = System.currentTimeMillis()
-                        val myRef = database.getReference(Constants.TIMECARD_NODE).child(user.maNV?: "-").child(currentTime.toString())
-                        val timeCard = TimeCard(user, currentTime)
-                        myRef.setValue(timeCard).addOnCompleteListener {
-                            if(it.isSuccessful) {
-                                Toast.makeText(requireContext(), "Chấm công thành công : ${user.name}", Toast.LENGTH_LONG).show()
-                            } else {
-                                Toast.makeText(requireContext(), it.exception?.message?: "Chấm công thất bại", Toast.LENGTH_LONG).show()
-                            }
-                        }.addOnFailureListener {
-                            Toast.makeText(requireContext(), it.message?: "Chấm công thất bại", Toast.LENGTH_LONG).show()
-                        }
+                        checkInStaff(user)
                     }
 
                 } catch (e: JSONException) {
@@ -89,5 +77,41 @@ class ScanQRFragment : Fragment() {
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    private fun checkInStaff(mUser: User) {
+        val cal = Calendar.getInstance()
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        val month = cal.get(Calendar.MONTH) + 1
+        val year = cal.get(Calendar.YEAR)
+
+        val timeCard = TimeCard()
+        timeCard.apply {
+            user = mUser
+            timeCheck = System.currentTimeMillis()
+            typeCheck = 0
+        }
+
+       FirebaseDatabase.getInstance().getReference(Constants.TIMECARD_NODE)
+            .child(mUser.maNV ?: "-")
+            .child(year.toString())
+            .child(month.toString())
+            .child(day.toString())
+            .child(Constants.CHECK_IN).setValue(timeCard)
+            .addOnCompleteListener { update ->
+                if (update.isSuccessful) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Chấm công thành công!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Vui lòng kiểm tra lại kết nối mạng!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
     }
 }

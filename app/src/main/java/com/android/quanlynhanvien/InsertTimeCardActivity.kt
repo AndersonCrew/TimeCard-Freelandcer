@@ -174,15 +174,12 @@ class InsertTimeCardActivity : BaseActivity() {
             typeCheck = 0
         }
 
-        val myRef = FirebaseDatabase.getInstance().getReference(Constants.TIMECARD_NODE)
+        FirebaseDatabase.getInstance().getReference(Constants.TIMECARD_NODE)
             .child(listStaff[positionUserChosen].maNV ?: "-")
             .child(year.toString())
             .child(month.toString())
             .child(day.toString())
-
-
-        val key = myRef.push().key ?: return
-        myRef.child(key).setValue(timeCard)
+            .child(Constants.CHECK_IN).setValue(timeCard)
             .addOnCompleteListener { update ->
                 hideProgress()
                 if (update.isSuccessful) {
@@ -191,6 +188,7 @@ class InsertTimeCardActivity : BaseActivity() {
                         "Chấm công thành công!",
                         Toast.LENGTH_LONG
                     ).show()
+
                     finish()
                 } else {
                     Toast.makeText(

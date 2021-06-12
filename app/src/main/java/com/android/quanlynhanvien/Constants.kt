@@ -14,4 +14,6 @@ object Constants {
     const val ACCESS_TOKEN = "ACCESS_TOKEN"
     const val STORAGE_IMAGES = "STORAGE_IMAGES"
     const val IS_LOGIN = "IS_LOGIN"
+    const val CHECK_IN = "CHECK_IN"
+    const val CHECK_OUT = "CHECK_OUT"
 }

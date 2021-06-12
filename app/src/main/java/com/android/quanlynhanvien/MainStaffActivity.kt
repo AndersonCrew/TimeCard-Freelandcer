@@ -56,15 +56,12 @@ class MainStaffActivity : BaseActivity() {
             sanluong = mSanluong
         }
 
-        val myRef = FirebaseDatabase.getInstance().getReference(Constants.TIMECARD_NODE)
+        FirebaseDatabase.getInstance().getReference(Constants.TIMECARD_NODE)
             .child(SharePreferencesUtils(this@MainStaffActivity).getUser()?.maNV ?: "-")
             .child(year.toString())
             .child(month.toString())
             .child(day.toString())
-
-
-        val key = myRef.push().key ?: return
-        myRef.child(key).setValue(timeCard)
+            .child(Constants.CHECK_OUT).setValue(timeCard)
             .addOnCompleteListener { update ->
                 hideProgress()
                 if (update.isSuccessful) {

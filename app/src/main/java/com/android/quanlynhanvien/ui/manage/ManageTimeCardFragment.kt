@@ -15,14 +15,12 @@ import com.android.quanlynhanvien.Constants
 import com.android.quanlynhanvien.InsertTimeCardActivity
 import com.android.quanlynhanvien.R
 import com.android.quanlynhanvien.model.TimeCard
+import com.android.quanlynhanvien.model.TimeCardDate
 import com.android.quanlynhanvien.ui.DetailTimeCardActivity
-import com.android.quanlynhanvien.ui.TimeCardAdapter
 import com.android.quanlynhanvien.ui.dialog.TimeCardDialog
 import com.google.firebase.database.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ManageTimeCardFragment : Fragment() {
 
@@ -32,7 +30,7 @@ class ManageTimeCardFragment : Fragment() {
     private lateinit var adapter: TimeCardAdapter
     private var progressDialog: ProgressDialog?= null
     private var etSearch: EditText?= null
-    private var listTimeCard: ArrayList<TimeCard> = arrayListOf()
+    private var listTimeCard: ArrayList<TimeCardDate> = arrayListOf()
     private var imgFilter: ImageView?= null
 
     private var listFiler : ArrayList<String> = arrayListOf()
@@ -145,15 +143,22 @@ class ManageTimeCardFragment : Fragment() {
                                                                 //Child Day
                                                                 for(childDay in snapshot.children) {
                                                                     childDay.key?.let {
+                                                                        val timeCardDate = TimeCardDate()
+                                                                        timeCardDate.list = arrayListOf()
                                                                         childDay.ref.addListenerForSingleValueEvent(object : ValueEventListener {
                                                                             override fun onDataChange(snapshot: DataSnapshot) {
                                                                                 for(childTimeCard in snapshot.children) {
                                                                                     val timeCard: TimeCard? = childTimeCard.getValue(TimeCard::class.java)
                                                                                     timeCard?.let {timeCardDTO ->
-                                                                                        listTimeCard.add(timeCardDTO)
-                                                                                        adapter.addItem(timeCardDTO)
+                                                                                        timeCardDate.time = timeCardDTO.timeCheck?: 0
+                                                                                        if(timeCardDate.list?.contains(timeCardDTO) == false) {
+                                                                                            timeCardDate.list?.add(timeCardDTO)
+                                                                                        }
                                                                                     }
                                                                                 }
+
+                                                                                listTimeCard.add(timeCardDate)
+                                                                                adapter.updateList(listTimeCard)
                                                                             }
 
                                                                             override fun onCancelled(error: DatabaseError) {
@@ -200,7 +205,7 @@ class ManageTimeCardFragment : Fragment() {
     }
 
     private fun searchList(text: String){
-        uiScope.launch {
+       /* uiScope.launch {
             var listFilter : ArrayList<TimeCard> = arrayListOf()
             if(!listTimeCard.isNullOrEmpty()) {
                 var listFilterAll: ArrayList<TimeCard> = arrayListOf()
@@ -252,7 +257,7 @@ class ManageTimeCardFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 adapter.updateList(listFilter)
             }
-        }
+        }*/
 
     }
 }

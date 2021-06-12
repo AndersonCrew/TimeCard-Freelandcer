@@ -74,6 +74,9 @@
     <string name="time_report">Thời gian</string>
     <string name="month">Tháng</string>
     <string name="year">Năm</string>
+    <string name="not_checkin">Check In Empty</string>
+    <string name="not_checkout">Check out Empty</string>
+    <string name="sanluong">Sản lượng : %s Kg</string>
 
     <string-array name="arrMonth">
         <item>1</item>
