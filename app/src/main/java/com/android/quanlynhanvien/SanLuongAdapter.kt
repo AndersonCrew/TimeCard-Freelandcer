@@ -36,7 +36,7 @@ class SanLuongAdapter (private val list: ArrayList<SanLuong>): RecyclerView.Adap
     fun addItem(sanLuong: SanLuong) {
         if(!list.contains(sanLuong)) {
             list.add(sanLuong)
-            notifyItemChanged(list.size - 1)
+            notifyDataSetChanged()
         }
 
     }

@@ -15,6 +15,7 @@ import com.android.quanlynhanvien.SpinnerStaffAdapter
 import com.android.quanlynhanvien.databinding.FragmentReportBinding
 import com.android.quanlynhanvien.model.SanLuong
 import com.android.quanlynhanvien.model.TimeCard
+import com.android.quanlynhanvien.model.TimeCardDate
 import com.android.quanlynhanvien.model.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -138,86 +139,123 @@ class ReportFragment : Fragment() {
     }
 
     private var listReport: ArrayList<SanLuong> = arrayListOf()
-    private var adapter: SanLuongAdapter?= null
+    private var adapter :SanLuongAdapter? = null
     private fun getReportUser() {
 
         showProgrss()
         binding?.tvTime?.text = "Ngày"
         val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference(Constants.TIMECARD_NODE).child(userReport?.maNV?: "-")
+
+        val myRef = database.getReference(Constants.TIMECARD_NODE)
+
+        // Read from the database
+
+        // Read from the database
+
+
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
+
                 listReport = arrayListOf()
-                adapter = SanLuongAdapter((arrayListOf()))
+                adapter = SanLuongAdapter(listReport)
                 binding?.rvReport?.adapter = adapter
-                binding?.rvReport?.visibility = View.GONE
-                binding?.csT?.visibility = View.GONE
-                dataSnapshot.ref.child(year).child((month + 1).toString()).addListenerForSingleValueEvent(object : ValueEventListener{
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        //Child Day
-                        for(childDay in snapshot.children) {
-                            childDay.key?.let {
-                                val sanLuong = SanLuong()
-                                sanLuong.time = childDay.key
-                                var sanluongKg = 0
-                                var hasCheckOut = false
-                                childDay.ref.addListenerForSingleValueEvent(object : ValueEventListener {
-                                    override fun onDataChange(snapshot: DataSnapshot) {
-                                        for(childTimeCard in snapshot.children) {
-                                            val timeCard: TimeCard? = childTimeCard.getValue(
-                                                TimeCard::class.java)
-                                            if(timeCard == null || timeCard.typeCheck == 0) {
-                                                break
-                                            } else {
-                                                hasCheckOut = true
-                                                sanluongKg += timeCard.sanluong?: 0
+
+
+                for(child in dataSnapshot.children) {
+                    //Child UUID
+                    child.key?.let {
+                        //Child UUID
+                        child.ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                for(childYear in snapshot.children) {
+                                    childYear.key?.let {
+                                        //Child Year
+                                        childYear.ref.addListenerForSingleValueEvent(object : ValueEventListener{
+                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                for(childMonth in snapshot.children) {
+                                                    //Child Month
+                                                    childMonth.key?.let {
+
+                                                        childMonth.ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                                //Child Day
+                                                                for(childDay in snapshot.children) {
+                                                                    childDay.key?.let {
+                                                                        val sanLuong = SanLuong()
+                                                                        sanLuong.time = childDay.key
+                                                                        var sanluongKg = 0
+                                                                        childDay.ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                                                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                                                var hasCheckOut = false
+                                                                                for(childTimeCard in snapshot.children) {
+                                                                                    val timeCard: TimeCard? = childTimeCard.getValue(TimeCard::class.java)
+                                                                                    if(timeCard == null || timeCard.typeCheck == 0) {
+                                                                                        break
+                                                                                    } else {
+                                                                                        hasCheckOut = true
+                                                                                        sanluongKg += timeCard.sanluong?: 0
+                                                                                    }
+                                                                                }
+
+                                                                                if(hasCheckOut) {
+                                                                                    sanLuong.sanluong = sanluongKg
+                                                                                    listReport.add(sanLuong)
+                                                                                    adapter?.addItem(sanLuong)
+                                                                                }
+
+                                                                            }
+
+                                                                            override fun onCancelled(error: DatabaseError) {
+                                                                                Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
+                                                                            }
+
+                                                                        })
+                                                                    }
+                                                                }
+
+                                                                hideProgrss()
+                                                                if(listReport.size > 0) {
+                                                                    binding?.csT?.visibility = View.VISIBLE
+                                                                    binding?.rvReport?.visibility = View.VISIBLE
+                                                                    binding?.tvNoData?.visibility = View.GONE
+                                                                } else {
+                                                                    binding?.csT?.visibility = View.GONE
+                                                                    binding?.rvReport?.visibility = View.GONE
+                                                                    binding?.tvNoData?.visibility = View.VISIBLE
+                                                                }
+                                                            }
+
+                                                            override fun onCancelled(error: DatabaseError) {
+                                                                Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
+                                                            }
+
+                                                        })
+                                                    }
+                                                }
                                             }
-                                        }
 
-                                        if(hasCheckOut) {
-                                            sanLuong.sanluong = sanluongKg
-                                            listReport.add(sanLuong)
-                                            adapter?.addItem(sanLuong)
-                                        }
+                                            override fun onCancelled(error: DatabaseError) {
+                                                Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
+                                            }
 
-
-                                        hideProgrss()
-                                        if(listReport.size > 0) {
-                                            binding?.csT?.visibility = View.VISIBLE
-                                            binding?.rvReport?.visibility = View.VISIBLE
-                                            binding?.tvNoData?.visibility = View.GONE
-                                        } else {
-                                            binding?.csT?.visibility = View.GONE
-                                            binding?.rvReport?.visibility = View.GONE
-                                            binding?.tvNoData?.visibility = View.VISIBLE
-                                        }
+                                        })
                                     }
-
-                                    override fun onCancelled(error: DatabaseError) {
-                                        hideProgrss()
-                                        Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
-                                    }
-
-                                })
+                                }
                             }
-                        }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
+                            }
+
+                        })
                     }
+                }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        hideProgrss()
-                        Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
-                    }
-
-                })
-
-
-                hideProgrss()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                hideProgrss()
                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
             }
         })
