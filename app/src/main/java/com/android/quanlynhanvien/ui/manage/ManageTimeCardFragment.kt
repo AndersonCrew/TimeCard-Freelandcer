@@ -21,6 +21,8 @@ import com.android.quanlynhanvien.ui.dialog.TimeCardDialog
 import com.google.firebase.database.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ManageTimeCardFragment : Fragment() {
 
@@ -204,60 +206,68 @@ class ManageTimeCardFragment : Fragment() {
         })
     }
 
-    private fun searchList(text: String){
-       /* uiScope.launch {
-            var listFilter : ArrayList<TimeCard> = arrayListOf()
-            if(!listTimeCard.isNullOrEmpty()) {
-                var listFilterAll: ArrayList<TimeCard> = arrayListOf()
-                val listFilterMaNV: ArrayList<TimeCard> = arrayListOf()
-                val listFilterName: ArrayList<TimeCard> = arrayListOf()
-                val listFilterEmail: ArrayList<TimeCard> = arrayListOf()
-                if(listFilerChosen.contains(3)) {
-                    listFilterAll.addAll(listTimeCard.filter { timeCard -> timeCard.user?.maNV.toString().toLowerCase().contains(text.toLowerCase()) ||
-                            timeCard.user?.name.toString().toLowerCase().contains(text.toLowerCase()) ||
-                            timeCard.user?.email.toString().toLowerCase().contains(text.toLowerCase())})
+    private fun checkSearchAll(timeCardDate: TimeCardDate, text: String): Boolean {
+        val timeCard = timeCardDate.list?.find { timeCard -> timeCard.user?.maNV.toString().toLowerCase().contains(text.toLowerCase()) ||
+            timeCard.user?.name.toString().toLowerCase().contains(text.toLowerCase()) ||
+                    timeCard.user?.email.toString().toLowerCase().contains(text.toLowerCase())}
+        return timeCard != null
+    }
 
-                    listFilterAll.forEach {
-                        if(!listFilter.contains(it)) {
-                            listFilter.add(it)
-                        }
+    private fun checkSearchMaNV(timeCardDate: TimeCardDate, text: String): Boolean {
+        val timeCard = timeCardDate.list?.find { timeCard -> timeCard.user?.maNV.toString().toLowerCase().contains(text.toLowerCase())}
+        return timeCard != null
+    }
+
+    private fun checkSearchName(timeCardDate: TimeCardDate, text: String): Boolean {
+        val timeCard = timeCardDate.list?.find { timeCard -> timeCard.user?.name.toString().toLowerCase().contains(text.toLowerCase())}
+        return timeCard != null
+    }
+
+    private fun checkSearchEmail(timeCardDate: TimeCardDate, text: String): Boolean {
+        val timeCard = timeCardDate.list?.find { timeCard -> timeCard.user?.email.toString().toLowerCase().contains(text.toLowerCase())}
+        return timeCard != null
+    }
+
+    private fun searchList(text: String){
+        uiScope.launch {
+            if(!listTimeCard.isNullOrEmpty()) {
+                var listFilterAll: ArrayList<TimeCardDate> = arrayListOf()
+                val listFilterMaNV: ArrayList<TimeCardDate> = arrayListOf()
+                val listFilterName: ArrayList<TimeCardDate> = arrayListOf()
+                val listFilterEmail: ArrayList<TimeCardDate> = arrayListOf()
+                if(listFilerChosen.contains(3)) {
+                    listFilterAll.addAll(listTimeCard.filter { timeCardDate -> checkSearchAll(timeCardDate, text) })
+                    withContext(Dispatchers.Main) {
+                        adapter.updateList(listFilterAll)
                     }
                 }
 
                 if(listFilerChosen.contains(0)) {
-                    listFilterMaNV.addAll(listTimeCard.filter { timeCard -> timeCard.user?.maNV.toString().toLowerCase().contains(text.toLowerCase())})
-                    listFilterMaNV.forEach {
-                        if(!listFilter.contains(it)) {
-                            listFilter.add(it)
-                        }
+                    listFilterMaNV.addAll(listTimeCard.filter { timeCardDate -> checkSearchMaNV(timeCardDate, text) })
+                    withContext(Dispatchers.Main) {
+                        adapter.updateList(listFilterMaNV)
                     }
                 }
 
                 if(listFilerChosen.contains(1)) {
-                    listFilterName.addAll(listTimeCard.filter { timeCard -> timeCard.user?.name.toString().toLowerCase().contains(text.toLowerCase())})
-                    listFilterName.forEach {
-                        if(!listFilter.contains(it)) {
-                            listFilter.add(it)
-                        }
+                    listFilterName.addAll(listTimeCard.filter { timeCardDate -> checkSearchName(timeCardDate, text) })
+                    withContext(Dispatchers.Main) {
+                        adapter.updateList(listFilterName)
                     }
                 }
 
                 if(listFilerChosen.contains(2)) {
-                    listFilterEmail.addAll(listTimeCard.filter { timeCard -> timeCard.user?.email.toString().toLowerCase().contains(text.toLowerCase())})
-                    listFilterEmail.forEach {
-                        if(!listFilter.contains(it)) {
-                            listFilter.add(it)
-                        }
+                    listFilterEmail.addAll(listTimeCard.filter { timeCardDate -> checkSearchEmail(timeCardDate, text) })
+                    withContext(Dispatchers.Main) {
+                        adapter.updateList(listFilterEmail)
                     }
                 }
 
 
             }
 
-            withContext(Dispatchers.Main) {
-                adapter.updateList(listFilter)
-            }
-        }*/
+
+        }
 
     }
 }

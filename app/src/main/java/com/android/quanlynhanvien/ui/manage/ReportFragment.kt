@@ -144,24 +144,68 @@ class ReportFragment : Fragment() {
 
         showProgrss()
         binding?.tvTime?.text = "Ngày"
+
+        binding?.csT?.visibility = View.GONE
+        binding?.rvReport?.visibility = View.GONE
+        binding?.tvNoData?.visibility = View.VISIBLE
+        listReport = arrayListOf()
+        adapter = SanLuongAdapter(listReport)
+        binding?.rvReport?.adapter = adapter
+
         val database = FirebaseDatabase.getInstance()
 
-        val myRef = database.getReference(Constants.TIMECARD_NODE)
+        val myRef = database.getReference(Constants.TIMECARD_NODE).child(userReport?.maNV?: "-").child(year).child((month + 1).toString())
 
         // Read from the database
 
         // Read from the database
-
 
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
 
-                listReport = arrayListOf()
-                adapter = SanLuongAdapter(listReport)
-                binding?.rvReport?.adapter = adapter
+                //Child Day
+                for(childDay in dataSnapshot.children) {
+                    childDay.ref.child(Constants.CHECK_OUT).addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onCancelled(
+                            error: DatabaseError
+                        ) {
+                            hideProgrss()
+                            Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
+                        }
 
+                        override fun onDataChange(
+                            snapshot: DataSnapshot
+                        ) {
+                            val timeCard: TimeCard? = snapshot.getValue(TimeCard::class.java)
+                            if(timeCard != null && timeCard.typeCheck == 1) {
+                                val sanLuong = SanLuong()
+                                sanLuong.sanluong = timeCard.sanluong
+                                sanLuong.time = timeCard.timeCheck
+                                adapter?.addItem(sanLuong)
+
+                                if(!listReport.contains(sanLuong)) {
+                                    listReport.add(sanLuong)
+                                }
+
+                                binding?.csT?.visibility = View.VISIBLE
+                                binding?.rvReport?.visibility = View.VISIBLE
+                                binding?.tvNoData?.visibility = View.GONE
+                            }
+                        }
+
+                    })
+                }
+                hideProgrss()
+
+            }
+
+
+        /*myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
 
                 for(child in dataSnapshot.children) {
                     //Child UUID
@@ -182,52 +226,42 @@ class ReportFragment : Fragment() {
                                                             override fun onDataChange(snapshot: DataSnapshot) {
                                                                 //Child Day
                                                                 for(childDay in snapshot.children) {
-                                                                    childDay.key?.let {
-                                                                        val sanLuong = SanLuong()
-                                                                        sanLuong.time = childDay.key
-                                                                        var sanluongKg = 0
-                                                                        childDay.ref.addListenerForSingleValueEvent(object : ValueEventListener {
-                                                                            override fun onDataChange(snapshot: DataSnapshot) {
-                                                                                var hasCheckOut = false
-                                                                                for(childTimeCard in snapshot.children) {
-                                                                                    val timeCard: TimeCard? = childTimeCard.getValue(TimeCard::class.java)
-                                                                                    if(timeCard == null || timeCard.typeCheck == 0) {
-                                                                                        break
-                                                                                    } else {
-                                                                                        hasCheckOut = true
-                                                                                        sanluongKg += timeCard.sanluong?: 0
-                                                                                    }
-                                                                                }
+                                                                    childDay.ref.child(Constants.CHECK_OUT).addListenerForSingleValueEvent(object : ValueEventListener {
+                                                                        override fun onCancelled(
+                                                                            error: DatabaseError
+                                                                        ) {
+                                                                            hideProgrss()
+                                                                            Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
+                                                                        }
 
-                                                                                if(hasCheckOut) {
-                                                                                    sanLuong.sanluong = sanluongKg
-                                                                                    listReport.add(sanLuong)
-                                                                                    adapter?.addItem(sanLuong)
-                                                                                }
+                                                                        override fun onDataChange(
+                                                                            snapshot: DataSnapshot
+                                                                        ) {
+                                                                            val timeCard: TimeCard? = snapshot.getValue(TimeCard::class.java)
+                                                                           if(timeCard != null && timeCard.typeCheck == 1) {
+                                                                               val sanLuong = SanLuong()
+                                                                               sanLuong.sanluong = timeCard.sanluong
+                                                                               sanLuong.time = timeCard.timeCheck
+                                                                               adapter?.addItem(sanLuong)
 
-                                                                            }
+                                                                               if(!listReport.contains(sanLuong)) {
+                                                                                   listReport.add(sanLuong)
+                                                                               }
 
-                                                                            override fun onCancelled(error: DatabaseError) {
-                                                                                Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
-                                                                            }
+                                                                               binding?.csT?.visibility = View.VISIBLE
+                                                                               binding?.rvReport?.visibility = View.VISIBLE
+                                                                               binding?.tvNoData?.visibility = View.GONE
+                                                                           }
+                                                                        }
 
-                                                                        })
-                                                                    }
+                                                                    })
                                                                 }
 
                                                                 hideProgrss()
-                                                                if(listReport.size > 0) {
-                                                                    binding?.csT?.visibility = View.VISIBLE
-                                                                    binding?.rvReport?.visibility = View.VISIBLE
-                                                                    binding?.tvNoData?.visibility = View.GONE
-                                                                } else {
-                                                                    binding?.csT?.visibility = View.GONE
-                                                                    binding?.rvReport?.visibility = View.GONE
-                                                                    binding?.tvNoData?.visibility = View.VISIBLE
-                                                                }
                                                             }
 
                                                             override fun onCancelled(error: DatabaseError) {
+                                                                hideProgrss()
                                                                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
                                                             }
 
@@ -237,6 +271,7 @@ class ReportFragment : Fragment() {
                                             }
 
                                             override fun onCancelled(error: DatabaseError) {
+                                                hideProgrss()
                                                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
                                             }
 
@@ -246,6 +281,7 @@ class ReportFragment : Fragment() {
                             }
 
                             override fun onCancelled(error: DatabaseError) {
+                                hideProgrss()
                                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
                             }
 
@@ -253,9 +289,10 @@ class ReportFragment : Fragment() {
                     }
                 }
 
-            }
+            }*/
 
             override fun onCancelled(error: DatabaseError) {
+                hideProgrss()
                 Toast.makeText(requireContext(), error.message, Toast.LENGTH_LONG).show()
             }
         })
